@@ -1,0 +1,4 @@
+{
+    "mavne.executable.path": "/opt/homebrew/bin/mvn",
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
