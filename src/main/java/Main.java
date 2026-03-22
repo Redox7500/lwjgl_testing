@@ -115,7 +115,7 @@ public class Main
             cubeTexture.use();
 
             shaderProgram.setUniforms(Map.of(
-                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.getLocalTransform().getMatrix())),
+                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.getLocalTransform())),
                 "tex", Uniform.of(0)
             ));
 

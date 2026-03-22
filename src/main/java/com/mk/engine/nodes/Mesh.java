@@ -2,6 +2,7 @@ package com.mk.engine.nodes;
 
 import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -40,14 +41,14 @@ public class Mesh extends Node
         this.hasUv = hasUv;
     }
 
-    public Mesh(Transform transform, float[] vertices)
+    public Mesh(Matrix4f transform, float[] vertices)
     {
         super(transform);
 
         this.vertices = vertices;
     }
 
-    public Mesh(Transform transform, float[] vertices, boolean hasUv)
+    public Mesh(Matrix4f transform, float[] vertices, boolean hasUv)
     {
         super(transform);
 

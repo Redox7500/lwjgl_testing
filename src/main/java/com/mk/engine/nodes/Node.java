@@ -7,8 +7,8 @@ import org.joml.Matrix4f;
 
 public class Node
 {
-    private Transform localTransform = new Transform();
-    private Transform globalTransform = new Transform();
+    private Matrix4f localTransform = new Matrix4f();
+    private Matrix4f globalTransform = new Matrix4f();
 
     public boolean shouldDraw = true;
 
@@ -20,33 +20,33 @@ public class Node
 
     }
 
-    public Node(Transform transform)
+    public Node(Matrix4f transform)
     {
         this.localTransform = transform;
     }
 
-    public void setLocalTransform(Transform transform)
+    public void setLocalTransform(Matrix4f transform)
     {
         this.localTransform = transform;
         this.updateGlobalTransform();
     }
 
-    public Transform getLocalTransform()
+    public Matrix4f getLocalTransform()
     {
         return this.localTransform;
     }
 
-    public void setGlobalTransform(Transform transform)
+    public void setGlobalTransform(Matrix4f transform)
     {
         this.globalTransform = transform;
 
         Matrix4f parentGlobalTransformInverse = new Matrix4f();
-        this.parent.globalTransform.getMatrix().invert(parentGlobalTransformInverse);
+        this.parent.globalTransform.invert(parentGlobalTransformInverse);
 
-        this.localTransform.setMatrix(parentGlobalTransformInverse.mul(this.globalTransform.getMatrix()));
+        this.localTransform = parentGlobalTransformInverse.mul(this.globalTransform);
     }
 
-    public Transform getGlobalTransform()
+    public Matrix4f getGlobalTransform()
     {
         return this.globalTransform;
     }
@@ -55,11 +55,11 @@ public class Node
     {
         if (this.parent == null)
         {
-            this.globalTransform.setMatrix(new Matrix4f(this.localTransform.getMatrix()));
+            this.globalTransform = new Matrix4f(this.localTransform);
         }
         else
         {
-            this.globalTransform.setMatrix(new Matrix4f(this.parent.globalTransform.getMatrix()).mul(this.localTransform.getMatrix()));
+            this.globalTransform = new Matrix4f(this.parent.globalTransform).mul(this.localTransform);
         }
     }
 

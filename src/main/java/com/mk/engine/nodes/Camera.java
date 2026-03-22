@@ -20,7 +20,7 @@ public class Camera extends Node
         super();
     }
 
-    public Camera(Transform transform)
+    public Camera(Matrix4f transform)
     {
         super(transform);
     }
@@ -37,16 +37,7 @@ public class Camera extends Node
         this.dirtyProjectionMatrix = true;
     }
 
-    public Camera(Matrix4f projectionMatrix)
-    {
-        super();
-
-        this.projectionMatrix = projectionMatrix;
-
-        this.dirtyProjectionValues = true;
-    }
-
-    public Camera(Transform transform, float fov, float aspect, float near, float far)
+    public Camera(Matrix4f transform, float fov, float aspect, float near, float far)
     {
         super(transform);
 
@@ -58,7 +49,7 @@ public class Camera extends Node
         this.dirtyProjectionMatrix = true;
     }
 
-    public Camera(Transform transform, Matrix4f projectionMatrix)
+    public Camera(Matrix4f transform, Matrix4f projectionMatrix)
     {
         super(transform);
 
@@ -70,7 +61,7 @@ public class Camera extends Node
     public Matrix4fc getViewMatrix()
     {
         Matrix4f viewMatrix = new Matrix4f();
-        this.getLocalTransform().getMatrix().invert(viewMatrix);
+        this.getLocalTransform().invert(viewMatrix);
         return viewMatrix;
     }
 
