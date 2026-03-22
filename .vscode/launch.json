@@ -17,7 +17,7 @@
             "request": "launch",
             "mainClass": "Main",
             "projectName": "lwjgl-testing",
-            "vmArgs": "-XstartOnFirstThread"
+            "vmArgs": "-XstartOnFirstThread --enable-native-access=ALL-UNNAMED"
         }
     ]
 }
