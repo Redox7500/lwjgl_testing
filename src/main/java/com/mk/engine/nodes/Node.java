@@ -3,12 +3,12 @@ package com.mk.engine.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 public class Node
 {
-    private Matrix4f localTransform = new Matrix4f();
-    private Matrix4f globalTransform = new Matrix4f();
+    public Transform localTransform = new Transform(this, TransformType.LOCAL);
+    public Transform globalTransform = new Transform(this, TransformType.GLOBAL);
 
     public boolean shouldDraw = true;
 
@@ -20,54 +20,24 @@ public class Node
 
     }
 
-    public Node(Matrix4f transform)
+    public Node(Matrix4fc transformMatrix)
     {
-        this.localTransform = transform;
+        this.localTransform = new Transform(this, TransformType.LOCAL, transformMatrix);
     }
 
-    public void setLocalTransform(Matrix4f transform)
+    public Node(Transform transform)
     {
-        this.localTransform = transform;
-        this.updateGlobalTransform();
-    }
-
-    public Matrix4f getLocalTransform()
-    {
-        return this.localTransform;
-    }
-
-    public void setGlobalTransform(Matrix4f transform)
-    {
-        this.globalTransform = transform;
-
-        Matrix4f parentGlobalTransformInverse = new Matrix4f();
-        this.parent.globalTransform.invert(parentGlobalTransformInverse);
-
-        this.localTransform = parentGlobalTransformInverse.mul(this.globalTransform);
-    }
-
-    public Matrix4f getGlobalTransform()
-    {
-        return this.globalTransform;
-    }
-
-    public void updateGlobalTransform()
-    {
-        if (this.parent == null)
-        {
-            this.globalTransform = new Matrix4f(this.localTransform);
-        }
-        else
-        {
-            this.globalTransform = new Matrix4f(this.parent.globalTransform).mul(this.localTransform);
-        }
+        this.localTransform = new Transform(this, TransformType.LOCAL, transform);
     }
 
     public void setParent(Node parent)
     {
         this.parent = parent;
+    }
 
-        this.updateGlobalTransform();
+    public Node getParent()
+    {
+        return this.parent;
     }
 
     public void addChild(Node child)
@@ -116,6 +86,16 @@ public class Node
         this.children.get(index).parent = null;
 
         this.children.remove(index);
+    }
+
+    public Node getChild(int index)
+    {
+        if (index >= this.children.size())
+        {
+            return null;
+        }
+
+        return this.children.get(index);
     }
 
     public void draw()

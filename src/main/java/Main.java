@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -94,8 +95,8 @@ public class Main
         }));
 
         Camera camera = new Camera((float)Math.toRadians(60), WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
-        camera.getLocalTransform().translate(new Vector3f(0, 2, 6));
-        camera.getLocalTransform().rotateX(-0.3f);
+        camera.localTransform.translate(new Vector3f(0, 2, 6));
+        camera.localTransform.rotateX(-0.3f);
 
         ShaderProgram shaderProgram = new ShaderProgram(
             new Shader(GL_VERTEX_SHADER, loadText("/shaders/basic/main.vert")),
@@ -104,18 +105,26 @@ public class Main
 
         Texture cubeTexture = new Texture("/textures/cube.png");
 
+        float lastFrameTime = (float)glfwGetTime();
+        float currentFrameTime;
+        float deltaTime;
+
         while (!glfwWindowShouldClose(window))
         {
+            currentFrameTime = (float)glfwGetTime();
+            deltaTime = currentFrameTime - lastFrameTime;
+
             glClearColor(0.1f, 0.1f, 0.15f, 1f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            cube.getLocalTransform().rotateY(0.01f);
+            cube.localTransform.rotateY(deltaTime);
 
             shaderProgram.use();
             cubeTexture.use();
 
             shaderProgram.setUniforms(Map.of(
-                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.getLocalTransform())),
+                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.localTransform.getMatrix())),
+                // "mvp", Uniform.of(new Matrix4f().perspective((float)Math.toRadians(60), WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 100f).mul(new Matrix4f().lookAt(2, 2, 2, 0, 0, 0, 0, 1, 0)).mul(cube.getChild(0).localTransform.getMatrix())),
                 "tex", Uniform.of(0)
             ));
 
@@ -123,6 +132,8 @@ public class Main
 
             glfwSwapBuffers(window);
             glfwPollEvents();
+
+            lastFrameTime = currentFrameTime;
         }
 
         glfwTerminate();
