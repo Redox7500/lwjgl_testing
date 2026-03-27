@@ -7,14 +7,14 @@ in vec2 vUV;
 uniform vec3 uViewPosition;
 uniform vec3 uLightPosition;
 uniform vec4 uLightColor;
-uniform sampler2D uTex;
+uniform sampler2D uTexture;
 
 out vec4 vFragColor;
 
 void main()
 {
     float ambientStrength = 0.1f;
-    float diffuseStrength = 1.0f;
+    float diffuseStrength = 0.2f;
     float specularStrength = 0.0f;
     int specularShininess = 32;
 
@@ -30,5 +30,5 @@ void main()
     float spec = pow(max(dot(viewDirection, reflectDirection), 0.f), specularShininess);
     vec4 specular = specularStrength * spec * uLightColor;
 
-    vFragColor = (ambient + diffuse + specular) * texture(uTex, vUV);
+    vFragColor = (ambient + diffuse + specular) * texture(uTexture, vUV);
 }

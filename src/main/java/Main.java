@@ -3,8 +3,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
@@ -96,8 +96,8 @@ public class Main
         camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
 
         ShaderProgram shaderProgram = new ShaderProgram(
-            loadText("/shaders/basic/main.vert"),
-            loadText("/shaders/basic/main.frag")
+            loadText("/shaders/phong/main.vert"),
+            loadText("/shaders/phong/main.frag")
         );
 
         Texture cubeTexture = new Texture("/textures/cube.png");
@@ -119,16 +119,19 @@ public class Main
             shaderProgram.use();
             cubeTexture.use();
 
-            shaderProgram.setUniforms(Map.of(
-                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.localTransform.getMatrix())),
-                "tex", Uniform.of(0)
-            ));
             // shaderProgram.setUniforms(Map.of(
-            //     "uProjection", Uniform.of(camera.getProjectionMatrix()),
-            //     "uView", Uniform.of(camera.getViewMatrix()),
-            //     "uModel", cube.localTransform.getMatrix(),
-            //     "uViewPosition", camera.
+            //     "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.localTransform.getMatrix())),
+            //     "tex", Uniform.of(0)
             // ));
+            shaderProgram.setUniforms(Map.of(
+                "uProjection",    Uniform.of(camera.getProjectionMatrix()),
+                "uView",          Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix()),
+                "uModel",         Uniform.of(cube.globalTransform.getMatrix()),
+                "uViewPosition",  Uniform.of(camera.globalTransform.getTranslation()),
+                "uLightPosition", Uniform.of(new Vector3f(0, 0, 0)),
+                "uLightColor",    Uniform.of(new Vector4f(1, 1, 1, 1)),
+                "uTexture",       Uniform.of(0)
+            ));
 
             cube.draw();
 
