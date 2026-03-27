@@ -121,7 +121,6 @@ public class Main
 
             shaderProgram.setUniforms(Map.of(
                 "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.localTransform.getMatrix())),
-                // "mvp", Uniform.of(new Matrix4f().perspective((float)Math.toRadians(60), WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 100f).mul(new Matrix4f().lookAt(2, 2, 2, 0, 0, 0, 0, 1, 0)).mul(cube.getChild(0).localTransform.getMatrix())),
                 "tex", Uniform.of(0)
             ));
 
