@@ -43,3 +43,9 @@ public sealed interface Uniform
     public static Uniform of(Vector4fc value) {return new V4F(value);}
     public static Uniform of(Matrix4fc value) {return new M4F(value);}
 }
+
+record I(int value) implements Uniform {}
+record F(float value) implements Uniform {}
+record V3F(Vector3fc value) implements Uniform {}
+record V4F(Vector4fc value) implements Uniform {}
+record M4F(Matrix4fc value) implements Uniform {}

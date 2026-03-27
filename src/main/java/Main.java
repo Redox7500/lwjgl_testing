@@ -92,15 +92,15 @@ public class Main
              0.5f,-0.5f, 0.5f, 1,1, -0.5f,-0.5f ,0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0
         }));
 
+        Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
+
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
         camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
-
+        
         ShaderProgram shaderProgram = new ShaderProgram(
             loadText("/shaders/phong/main.vert"),
             loadText("/shaders/phong/main.frag")
         );
-
-        Texture cubeTexture = new Texture("/textures/cube.png");
 
         float startTime = (float)glfwGetTime();
         float lastFrameTime = startTime;
