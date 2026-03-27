@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL20.glAttachShader;
 import static org.lwjgl.opengl.GL20.glCompileShader;
 import static org.lwjgl.opengl.GL20.glCreateProgram;
 import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glDetachShader;
 import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
@@ -88,6 +89,14 @@ public class ShaderProgram
         if (glGetProgrami(this.id, GL_LINK_STATUS) == GL_FALSE)
         {
             throw new RuntimeException(glGetProgramInfoLog(this.id));
+        }
+    }
+
+    private void removeShader(int shaderId)
+    {
+        if (shaderId != 0)
+        {
+            glDetachShader(this.id, shaderId);
         }
     }
 
@@ -169,6 +178,36 @@ public class ShaderProgram
     //     }
 
     //     this.setShaderSource(this.computeShaderId, this.computeShaderSource);
+    // }
+
+    public void removeGeometryShader()
+    {
+        this.removeShader(this.geometryShaderId);
+
+        this.geometryShaderSource = null;
+    }
+
+    public void removeTessellationControlShader()
+    {
+        this.removeShader(this.tessellationControlShaderId);
+        
+        this.tessellationControlShaderSource = null;
+    }
+
+    public void removeTessellationShaders()
+    {
+        this.removeShader(this.tessellationEvaluationShaderId);
+
+        this.tessellationEvaluationShaderSource = null;
+
+        this.removeTessellationControlShader();
+    }
+
+    // public void removeComputeShader()
+    // {
+    //     this.removeShader(this.computeShaderId);
+
+    //     this.computeShaderSource = null;
     // }
 
     public void updateUniformLocationMap()
