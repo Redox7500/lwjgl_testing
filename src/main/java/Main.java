@@ -29,14 +29,11 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
-import com.mk.engine.shaders.Shader;
 import com.mk.engine.shaders.ShaderProgram;
 import com.mk.engine.textures.Texture;
 import com.mk.engine.uniforms.Uniform;
@@ -94,13 +91,13 @@ public class Main
              0.5f,-0.5f, 0.5f, 1,1, -0.5f,-0.5f ,0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0
         }));
 
-        Camera camera = new Camera((float)Math.toRadians(60), WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
+        Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
         camera.localTransform.translate(new Vector3f(0, 2, 6));
         camera.localTransform.rotateX(-0.3f);
 
         ShaderProgram shaderProgram = new ShaderProgram(
-            new Shader(GL_VERTEX_SHADER, loadText("/shaders/basic/main.vert")),
-            new Shader(GL_FRAGMENT_SHADER, loadText("/shaders/basic/main.frag"))
+            loadText("/shaders/basic/main.vert"),
+            loadText("/shaders/basic/main.frag")
         );
 
         Texture cubeTexture = new Texture("/textures/cube.png");

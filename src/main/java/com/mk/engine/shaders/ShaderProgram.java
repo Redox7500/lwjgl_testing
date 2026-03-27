@@ -8,14 +8,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glCompileShader;
 import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
+import static org.lwjgl.opengl.GL40.GL_TESS_CONTROL_SHADER;
+import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
 
 import com.mk.engine.uniforms.Uniform;
 
@@ -23,11 +34,18 @@ public class ShaderProgram
 {
     private int id = glCreateProgram();
 
-    private Shader vertexShader = null;
-    private Shader fragmentShader = null;
-    private Shader geometryShader = null;
-    private Shader tessellationShader = null;
-    private Shader computeShader = null;
+    private int vertexShaderId = 0;
+    private int fragmentShaderId = 0;
+    private int geometryShaderId = 0;
+    private int tessellationControlShaderId = 0;
+    private int tessellationEvaluationShaderId = 0;
+    // private int computeShaderId = 0;
+    private String vertexShaderSource = null;
+    private String fragmentShaderSource = null;
+    private String geometryShaderSource = null;
+    private String tessellationControlShaderSource = null;
+    private String tessellationEvaluationShaderSource = null;
+    // private String computeShaderSource = null;
 
     private Map<String, Integer> uniformLocationMap = new HashMap<>();
 
@@ -36,15 +54,10 @@ public class ShaderProgram
 
     }
 
-    public ShaderProgram(Shader vertexShader, Shader fragmentShader)
+    public ShaderProgram(String vertexShaderSource, String fragmentShaderSource)
     {
-        this.vertexShader = vertexShader;
-        this.fragmentShader = fragmentShader;
-
-        this.attachShader(this.vertexShader);
-        this.attachShader(this.fragmentShader);
-
-        this.updateUniformLocationMap();
+        this.setVertexShaderSource(vertexShaderSource);
+        this.setFragmentShaderSource(fragmentShaderSource);
     }
 
     public int getId()
@@ -52,10 +65,25 @@ public class ShaderProgram
         return this.id;
     }
 
-    private void attachShader(Shader shader)
+    private void setShaderSource(int shaderId, String source)
     {
-        glAttachShader(this.id, shader.getId());
+        glShaderSource(shaderId, source);
+        this.compileShader(shaderId);
+        this.link();
+        this.updateUniformLocationMap();
+    }
 
+    private void compileShader(int shaderId)
+    {
+        glCompileShader(shaderId);
+        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE)
+        {
+            throw new RuntimeException(glGetShaderInfoLog(id));
+        }
+    }
+
+    private void link()
+    {
         glLinkProgram(this.id);
         if (glGetProgrami(this.id, GL_LINK_STATUS) == GL_FALSE)
         {
@@ -63,91 +91,107 @@ public class ShaderProgram
         }
     }
 
-    public void addGeometryShader(Shader shader)
-    {
-        if (this.geometryShader == null)
-        {
-            return;
-        }
-
-        this.geometryShader = shader;
-        this.attachShader(this.geometryShader);
-    }
-
-    public void addTessellationShader(Shader shader)
-    {
-        if (this.tessellationShader == null)
-        {
-            return;
-        }
-
-        this.tessellationShader = shader;
-        this.attachShader(this.tessellationShader);
-    }
-
-    public void addComputeShader(Shader shader)
-    {
-        if (this.computeShader == null)
-        {
-            return;
-        }
-
-        this.computeShader = shader;
-        this.attachShader(this.computeShader);
-    }
-
     public void setVertexShaderSource(String source)
     {
-        this.vertexShader.setSource(source);
-        this.attachShader(this.vertexShader);
-        this.updateUniformLocationMap();
+        this.vertexShaderSource = source;
+
+        if (this.vertexShaderId == 0)
+        {
+            this.vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+            glAttachShader(this.id, this.vertexShaderId);
+        }
+
+        this.setShaderSource(this.vertexShaderId, this.vertexShaderSource);
     }
 
     public void setFragmentShaderSource(String source)
     {
-        this.fragmentShader.setSource(source);
-        this.attachShader(this.fragmentShader);
-        this.updateUniformLocationMap();
+        this.fragmentShaderSource = source;
+
+        if (this.fragmentShaderId == 0)
+        {
+            this.fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+            glAttachShader(this.id, this.fragmentShaderId);
+        }
+
+        this.setShaderSource(this.fragmentShaderId, this.fragmentShaderSource);
     }
 
     public void setGeometryShaderSource(String source)
     {
-        this.fragmentShader.setSource(source);
-        this.attachShader(this.geometryShader);
-        this.updateUniformLocationMap();
+        this.geometryShaderSource = source;
+
+        if (this.geometryShaderId == 0)
+        {
+            this.geometryShaderId = glCreateShader(GL_GEOMETRY_SHADER);
+            glAttachShader(this.id, this.geometryShaderId);
+        }
+
+        this.setShaderSource(this.geometryShaderId, this.geometryShaderSource);
     }
 
-    public void setTessellationShaderSource(String source)
+    public void setTessellationEvaluationShaderSource(String source)
     {
-        this.fragmentShader.setSource(source);
-        this.attachShader(this.tessellationShader);
-        this.updateUniformLocationMap();
+        this.tessellationEvaluationShaderSource = source;
+
+        if (this.tessellationEvaluationShaderId == 0)
+        {
+            this.tessellationEvaluationShaderId = glCreateShader(GL_TESS_EVALUATION_SHADER);
+            glAttachShader(this.id, this.tessellationEvaluationShaderId);
+        }
+
+        this.setShaderSource(this.tessellationEvaluationShaderId, this.tessellationEvaluationShaderSource);
     }
 
-    public void setComputeShaderSource(String source)
+    public void setTessellationShadersSources(String controlSource, String evaluationSource)
     {
-        this.fragmentShader.setSource(source);
-        this.attachShader(this.computeShader);
-        this.updateUniformLocationMap();
+        this.tessellationControlShaderSource = controlSource;
+
+        if (this.tessellationControlShaderId == 0)
+        {
+            this.tessellationControlShaderId = glCreateShader(GL_TESS_CONTROL_SHADER);
+            glAttachShader(this.id, this.tessellationControlShaderId);
+        }
+
+        this.setShaderSource(this.tessellationControlShaderId, this.tessellationControlShaderSource);
+
+        this.setTessellationEvaluationShaderSource(evaluationSource);
     }
+
+    // public void setComputeShaderSource(String source)
+    // {
+    //     this.computeShaderSource = source;
+
+    //     if (this.computeShaderId == 0)
+    //     {
+    //         this.computeShaderId = glCreateShader(GL_COMPUTE_SHADER);
+    //         glAttachShader(this.id, this.computeShaderId);
+    //     }
+
+    //     this.setShaderSource(this.computeShaderId, this.computeShaderSource);
+    // }
 
     public void updateUniformLocationMap()
     {
         this.uniformLocationMap = new HashMap<>();
 
-        StringBuilder combinedSources = new StringBuilder(this.vertexShader.getSource() + this.fragmentShader.getSource());
-        if (this.geometryShader != null)
+        StringBuilder combinedSources = new StringBuilder(this.vertexShaderSource + this.fragmentShaderSource);
+        if (this.geometryShaderId != 0)
         {
-            combinedSources.append(this.geometryShader.getSource());
+            combinedSources.append(this.geometryShaderSource);
         }
-        if (this.tessellationShader != null)
+        if (this.tessellationControlShaderId != 0)
         {
-            combinedSources.append(this.tessellationShader.getSource());
+            combinedSources.append(this.tessellationControlShaderSource);
         }
-        if (this.computeShader != null)
+        if (this.tessellationEvaluationShaderId != 0)
         {
-            combinedSources.append(this.computeShader.getSource());
+            combinedSources.append(this.tessellationEvaluationShaderSource);
         }
+        // if (this.computeShaderId != 0)
+        // {
+        //     combinedSources.append(this.computeShaderSource);
+        // }
 
         Pattern pattern = Pattern.compile("(uniform\\s+[a-zA-Z0-9_]+\\s+([a-zA-Z0-9_\\[\\]]+(?:\\s*,\\s*[a-zA-Z0-9_\\[\\]]+)*))");
         Matcher matcher = pattern.matcher(combinedSources); // should i change when combined sources is updated, so that it updates when a shader is attached? or maybe some dirty flag? idk
@@ -156,12 +200,6 @@ public class ShaderProgram
         {
             uniformNames.add(matcher.group(matcher.groupCount()));
         }
-
-        // List<String> uniformNames = Pattern.compile("(uniform\\s+[a-zA-Z0-9_]+\\s+([a-zA-Z0-9_\\[\\]]+(?:\\s*,\\s*[a-zA-Z0-9_\\[\\]]+)*))")
-        //     .matcher(combinedSources.toString())
-        //     .results()
-        //     .map((matchResult) -> matchResult.group())
-        //     .collect(Collectors.toList());
 
         this.use();
         for (String uniformName:uniformNames)

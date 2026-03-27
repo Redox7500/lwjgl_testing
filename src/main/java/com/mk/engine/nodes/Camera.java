@@ -29,27 +29,33 @@ public class Camera extends Node
     {
         super();
 
-        this.setFov(fov);
-        this.setAspect(aspect);
-        this.setNear(near);
-        this.setFar(far);
+        this.fov = fov;
+        this.aspect = aspect;
+        this.near = near;
+        this.far = far;
+
+        this.dirtyProjectionMatrix = true;
     }
 
     public Camera(Matrix4f transform, float fov, float aspect, float near, float far)
     {
         super(transform);
 
-        this.setFov(fov);
-        this.setAspect(aspect);
-        this.setNear(near);
-        this.setFar(far);
+        this.fov = fov;
+        this.aspect = aspect;
+        this.near = near;
+        this.far = far;
+
+        this.dirtyProjectionMatrix = true;
     }
 
     public Camera(Matrix4f transform, Matrix4f projectionMatrix)
     {
         super(transform);
 
-        this.setProjectionMatrix(projectionMatrix);
+        this.projectionMatrix = projectionMatrix;
+
+        this.dirtyProjectionValues = true;
     }
 
     public Matrix4fc getViewMatrix()

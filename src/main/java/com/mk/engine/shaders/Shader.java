@@ -13,6 +13,7 @@ public class Shader
     private int id = 0;
     private String source = "";
     private int type = 0;
+    private ShaderProgram shaderProgram = null;
 
     public Shader(int type, String source)
     {
@@ -56,6 +57,14 @@ public class Shader
         if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE)
         {
             throw new RuntimeException(glGetShaderInfoLog(id));
+        }
+    }
+
+    void setShaderProgram(ShaderProgram shaderProgram)
+    {
+        if (this.shaderProgram == null)
+        {
+            this.shaderProgram = shaderProgram;
         }
     }
 }
