@@ -34,6 +34,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
+import com.mk.engine.nodes.Transform;
 import com.mk.engine.shaders.ShaderProgram;
 import com.mk.engine.textures.Texture;
 import com.mk.engine.uniforms.Uniform;
@@ -92,8 +93,7 @@ public class Main
         }));
 
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
-        camera.localTransform.translate(new Vector3f(0, 2, 6));
-        camera.localTransform.rotateX(-0.3f);
+        camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
 
         ShaderProgram shaderProgram = new ShaderProgram(
             loadText("/shaders/basic/main.vert"),
@@ -120,9 +120,15 @@ public class Main
             cubeTexture.use();
 
             shaderProgram.setUniforms(Map.of(
-                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(camera.getViewMatrix()).mul(cube.localTransform.getMatrix())),
+                "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.localTransform.getMatrix())),
                 "tex", Uniform.of(0)
             ));
+            // shaderProgram.setUniforms(Map.of(
+            //     "uProjection", Uniform.of(camera.getProjectionMatrix()),
+            //     "uView", Uniform.of(camera.getViewMatrix()),
+            //     "uModel", cube.localTransform.getMatrix(),
+            //     "uViewPosition", camera.
+            // ));
 
             cube.draw();
 

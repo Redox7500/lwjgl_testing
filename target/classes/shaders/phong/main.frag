@@ -6,7 +6,6 @@ in vec2 vUV;
 
 uniform vec3 uViewPosition;
 uniform vec3 uLightPosition;
-uniform vec4 uObjectColor;
 uniform vec4 uLightColor;
 uniform sampler2D uTex;
 

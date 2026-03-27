@@ -9,11 +9,18 @@ public class Transform
 {
     private Matrix4f matrix = new Matrix4f();
     private Node attachedNode = null;
-    private TransformType type;
+    private TransformType type = null;
 
     public Transform(Matrix4fc matrix)
     {
         this.matrix = new Matrix4f(matrix);
+    }
+
+    public Transform(Transform transform)
+    {
+        this.matrix = new Matrix4f(transform.matrix);
+        this.attachedNode = transform.attachedNode;
+        this.type = transform.type;
     }
 
     public Transform(Node attachedNode, TransformType type)
@@ -71,10 +78,7 @@ public class Transform
     {
         this.matrix = new Matrix4f(matrix);
 
-        if (this.attachedNode != null)
-        {
-            this.updateAttachedNode();
-        }
+        this.updateAttachedNode();
         
         return this;
     }
@@ -87,6 +91,8 @@ public class Transform
     public Transform setTranslation(Vector3fc translation)
     {
         this.matrix.setTranslation(translation);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -102,6 +108,8 @@ public class Transform
     {
         this.matrix.setRotationXYZ(rotation.x(), rotation.y(), rotation.z());
 
+        this.updateAttachedNode();
+
         return this;
     }
 
@@ -115,6 +123,8 @@ public class Transform
     public Transform setScale(Vector3fc scale)
     {
         this.matrix = new Matrix4f().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(scale);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -130,12 +140,16 @@ public class Transform
     {
         this.matrix.translate(translation);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform translateX(float offset)
     {
         this.matrix.translate(offset, 0, 0);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -144,12 +158,16 @@ public class Transform
     {
         this.matrix.translate(0, offset, 0);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform translateZ(float offset)
     {
         this.matrix.translate(0, 0, offset);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -158,12 +176,16 @@ public class Transform
     {
         this.matrix.rotateXYZ(rotation);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform rotateX(float angle)
     {
         this.matrix.rotateXYZ(angle, 0, 0);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -172,12 +194,16 @@ public class Transform
     {
         this.matrix.rotateXYZ(0, angle, 0);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform rotateZ(float angle)
     {
         this.matrix.rotateXYZ(0, 0, angle);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -186,12 +212,16 @@ public class Transform
     {
         this.matrix.scale(scale);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform scaleX(float factor)
     {
         this.matrix.scale(factor, 0, 0);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -200,12 +230,16 @@ public class Transform
     {
         this.matrix.scale(0, factor, 0);
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform scaleZ(float factor)
     {
         this.matrix.scale(0, 0, factor);
+
+        this.updateAttachedNode();
 
         return this;
     }
@@ -214,12 +248,16 @@ public class Transform
     {
         this.matrix.invert();
 
+        this.updateAttachedNode();
+
         return this;
     }
 
     public Transform apply(Transform transform)
     {
         transform.matrix.mul(this.matrix, this.matrix);
+        
+        this.updateAttachedNode();
 
         return this;
     }

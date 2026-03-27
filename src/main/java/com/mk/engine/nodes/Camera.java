@@ -58,13 +58,6 @@ public class Camera extends Node
         this.dirtyProjectionValues = true;
     }
 
-    public Matrix4fc getViewMatrix()
-    {
-        Matrix4f viewMatrix = new Matrix4f();
-        this.localTransform.getMatrix().invert(viewMatrix);
-        return viewMatrix;
-    }
-
     public void setProjectionMatrix(Matrix4f projectionMatrix)
     {
         this.projectionMatrix = projectionMatrix;
