@@ -97,43 +97,31 @@ public class Transform
         return this;
     }
 
-    public Vector3f getTranslation()
+    public Transform setTranslationX(float offset)
     {
-        Vector3f translation = new Vector3f();
-        this.matrix.getTranslation(translation);
-        return translation;
-    }
-
-    public Transform setRotation(Vector3fc rotation)
-    {
-        this.matrix.setRotationXYZ(rotation.x(), rotation.y(), rotation.z());
+        this.matrix.m30(offset);
 
         this.updateAttachedNode();
 
         return this;
     }
 
-    public Vector3f getRotation()
+    public Transform setTranslationY(float offset)
     {
-        Vector3f rotation = new Vector3f();
-        this.matrix.getEulerAnglesXYZ(rotation);
-        return rotation;
-    }
-
-    public Transform setScale(Vector3fc scale)
-    {
-        this.matrix = new Matrix4f().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(scale);
+        this.matrix.m31(offset);
 
         this.updateAttachedNode();
 
         return this;
     }
 
-    public Vector3f getScale()
+    public Transform setTranslationZ(float offset)
     {
-        Vector3f translation = new Vector3f();
-        this.matrix.getScale(translation);
-        return translation;
+        this.matrix.m32(offset);
+
+        this.updateAttachedNode();
+
+        return this;
     }
 
     public Transform translate(Vector3fc translation)
@@ -166,6 +154,49 @@ public class Transform
     public Transform translateZ(float offset)
     {
         this.matrix.translate(0, 0, offset);
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Vector3f getTranslation()
+    {
+        Vector3f translation = new Vector3f();
+        this.matrix.getTranslation(translation);
+        return translation;
+    }
+
+    public Transform setRotation(Vector3fc rotation)
+    {
+        this.matrix.setRotationXYZ(rotation.x(), rotation.y(), rotation.z());
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setRotationX(float angle)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(0, angle)).scale(this.getScale());
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setRotationY(float angle)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(1, angle)).scale(this.getScale());
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setRotationZ(float angle)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(2, angle)).scale(this.getScale());
 
         this.updateAttachedNode();
 
@@ -208,6 +239,49 @@ public class Transform
         return this;
     }
 
+    public Vector3f getRotation()
+    {
+        Vector3f rotation = new Vector3f();
+        this.matrix.getEulerAnglesXYZ(rotation);
+        return rotation;
+    }
+
+    public Transform setScale(Vector3fc scale)
+    {
+        this.matrix = new Matrix4f().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(scale);
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setScaleX(float factor)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(0, factor));
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setScaleY(float factor)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(1, factor));
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
+    public Transform setScaleZ(float factor)
+    {
+        this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(2, factor));
+
+        this.updateAttachedNode();
+
+        return this;
+    }
+
     public Transform scale(Vector3fc scale)
     {
         this.matrix.scale(scale);
@@ -242,6 +316,13 @@ public class Transform
         this.updateAttachedNode();
 
         return this;
+    }
+
+    public Vector3f getScale()
+    {
+        Vector3f translation = new Vector3f();
+        this.matrix.getScale(translation);
+        return translation;
     }
 
     public Transform inverse()
