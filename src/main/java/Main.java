@@ -117,27 +117,26 @@ public class Main
             glClearColor(0.1f, 0.1f, 0.15f, 1f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime) - 0.5f, 0));
+            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2), 0));
 
             shaderProgram.use();
-            cubeTexture.use();
 
             // shaderProgram.setUniforms(Map.of(
             //     "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.localTransform.getMatrix())),
-            //     "tex", Uniform.of(0)
+            //     "tex", Uniform.of(cubeTexture.use())
             // ));
             shaderProgram.setUniforms(Map.ofEntries(
-                Map.entry("uProjection",    Uniform.of(camera.getProjectionMatrix())),
-                Map.entry("uView",          Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
-                Map.entry("uModel",         Uniform.of(cube.globalTransform.getMatrix())),
-                Map.entry("uViewPosition",  Uniform.of(camera.globalTransform.getTranslation())),
-                Map.entry("uLightPosition", Uniform.of(new Vector3f(10, 10, 0))),
-                Map.entry("uLightColor",    Uniform.of(new Vector4f(1, 1, 1, 1))),
-                Map.entry("uAmbientStrength", Uniform.of(0.2f)),
-                Map.entry("uDiffuseStrength", Uniform.of(0.2f)),
-                Map.entry("uSpecularStrength", Uniform.of(0.2f)),
+                Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
+                Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
+                Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
+                Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
+                Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
+                Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
+                Map.entry("uAmbientStrength",   Uniform.of(0.2f)),
+                Map.entry("uDiffuseStrength",   Uniform.of(0.2f)),
+                Map.entry("uSpecularStrength",  Uniform.of(0.2f)),
                 Map.entry("uSpecularShininess", Uniform.of(32)),
-                Map.entry("uTexture",       Uniform.of(0))
+                Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
             ));
 
             cube.draw();

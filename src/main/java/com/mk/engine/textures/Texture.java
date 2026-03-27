@@ -85,9 +85,16 @@ public class Texture
         STBImage.stbi_image_free(img);
     }
 
-    public void use()
+    public int use(int unit)
     {
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0 + unit);
         glBindTexture(GL_TEXTURE_2D, this.id);
+
+        return unit;
+    }
+
+    public int use()
+    {
+        return this.use(0);
     }
 }
