@@ -16,6 +16,12 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 public sealed interface Uniform
     permits I, F, V3F, V4F, M4F
 {
+    public static Uniform of(int value) {return new I(value);}
+    public static Uniform of(float value) {return new F(value);}
+    public static Uniform of(Vector3fc value) {return new V3F(value);}
+    public static Uniform of(Vector4fc value) {return new V4F(value);}
+    public static Uniform of(Matrix4fc value) {return new M4F(value);}
+
     public static void set(int location, Uniform value)
     {
         switch (value)
@@ -25,7 +31,6 @@ public sealed interface Uniform
             case V3F uniform -> glUniform3f(location, uniform.value().x(), uniform.value().y(), uniform.value().z());
             case V4F uniform -> glUniform4f(location, uniform.value().x(), uniform.value().y(), uniform.value().z(), uniform.value().w());
             case M4F uniform -> {FloatBuffer buffer = BufferUtils.createFloatBuffer(16); uniform.value().get(buffer); glUniformMatrix4fv(location, false, buffer);}
-            default -> throw new AssertionError("Unknown Uniform type");
         }
     }
 
@@ -36,12 +41,6 @@ public sealed interface Uniform
             set(location, uniformLocationMap.get(location));
         }
     }
-
-    public static Uniform of(int value) {return new I(value);}
-    public static Uniform of(float value) {return new F(value);}
-    public static Uniform of(Vector3fc value) {return new V3F(value);}
-    public static Uniform of(Vector4fc value) {return new V4F(value);}
-    public static Uniform of(Matrix4fc value) {return new M4F(value);}
 }
 
 record I(int value) implements Uniform {}

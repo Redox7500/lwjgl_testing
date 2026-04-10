@@ -1,65 +1,151 @@
 package com.mk.engine.nodes;
 
-import java.nio.FloatBuffer;
+// import java.nio.FloatBuffer;
 
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
+// import org.joml.Matrix4f;
+// import org.lwjgl.BufferUtils;
+// import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
 
+import com.mk.engine.buffers.BufferData;
+import com.mk.engine.buffers.BufferObject;
 
 public class Mesh extends Node
 {
-    private float[] vertices;
-    private boolean hasUv = true;
+    // private float[] vertexPositions;
+    // private float[] vertexNormals;
+    // private int[] vertexUVs;
+    // private int vertexSize = 3;
+    public List<BufferObject> vertexBufferObjects = new ArrayList<>();
 
-    private int vao = glGenVertexArrays();
-    private int vbo = glGenBuffers();
+    private int vertexArrayObject = glGenVertexArrays();
+    // private int vao = glGenVertexArrays();
+    // private int vbo = glGenBuffers();
 
-    public Mesh(float[] vertices)
+    public Mesh()
+    {
+        super();
+    }
+
+    public Mesh(List<BufferObject> vertexBufferObjects)
     {
         super();
 
-        this.vertices = vertices;
+        this.vertexBufferObjects = vertexBufferObjects;
+
+        // for (VertexData vertexData:verticesData)
+        // {
+        //     vertexBuffers.put(glGenBuffers(), vertexData);
+        // }
     }
 
-    public Mesh(float[] vertices, boolean hasUv)
-    {
-        super();
-
-        this.vertices = vertices;
-        this.hasUv = hasUv;
-    }
-
-    public Mesh(Matrix4f transform, float[] vertices)
+    public Mesh(Transform transform, List<BufferObject> vertexBufferObjects)
     {
         super(transform);
 
-        this.vertices = vertices;
+        this.vertexBufferObjects = vertexBufferObjects;
+        // for (VertexData vertexData:verticesData)
+        // {
+        //     vertexBuffers.put(glGenBuffers(), vertexData);
+        // }
     }
 
-    public Mesh(Matrix4f transform, float[] vertices, boolean hasUv)
-    {
-        super(transform);
+    // public add
 
-        this.vertices = vertices;
-        this.hasUv = hasUv;
-    }
+    // public Mesh(float[] vertexPositions, float[] vertexNormals, int[] vertexUVs)
+    // {
+    //     super();
 
-    public float[] getVertices()
-    {
-        return this.vertices.clone();
-    }
+    //     this.vertexPositions = vertexPositions;
+    //     this.vertexNormals = vertexNormals;
+    //     this.vertexUVs = vertexUVs;
+    // }
+
+    // public Mesh(float[] vertexPositions, float[] vertexNormals)
+    // {
+    //     super();
+
+    //     this.vertexPositions = vertexPositions;
+    //     this.vertexNormals = vertexNormals;
+    // }
+
+    // public Mesh(float[] vertexPositions, int[] vertexUVs)
+    // {
+    //     super();
+
+    //     this.vertexPositions = vertexPositions;
+    //     this.vertexUVs = vertexUVs;
+    // }
+
+    // public Mesh(float[] vertexPositions)
+    // {
+    //     super();
+
+    //     this.vertexPositions = vertexPositions;
+    // }
+
+    // public Mesh(float[] vertexPositions, boolean generateNormals, boolean generateUVs)
+    // {
+    //     super();
+
+    //     this.vertexPositions = vertexPositions;
+
+    //     if (generateNormals)
+    //     {
+            
+    //     }
+    //     if (generateUVs)
+    //     {
+            
+    //     }
+
+    //     this.vertexSize += ((this.vertexNormals != null)? 3:0) + ((this.vertexUVs != null)? 2:0);
+    // }
+
+    // public Mesh(Matrix4f transform, float[] vertexPositions, float[] vertexNormals, int[] )
+
+    // public Mesh(Matrix4f transform, float[] vertexPositions)
+    // {
+    //     super(transform);
+
+    //     this.vertexPositions = vertexPositions;
+    // }
+
+    // public Mesh(Matrix4f transform, float[] vertexPositions, boolean generateNormals, boolean generateUVs)
+    // {
+    //     super(transform);
+
+    //     this(vertexPositions, generateNormals, generateUVs);
+
+    //     // this.vertices = vertices;
+        
+    //     this.vertexSize += ((this.vertexNormals != null)? 3:0) + ((this.vertexUVs != null)? 2:0);
+    // }
+
+    // public float[] getVertices()
+    // {
+    //     return this.vertexPositions.clone();
+    // }
+
+    // public float[] getNormals()
+    // {
+    //     return (this.vertexNormals != null)? this.vertexNormals.clone():null;
+    // }
+
+    // public int[] getUVs()
+    // {
+    //     return (this.vertexUVs != null)? this.vertexUVs.clone():null;
+    // }
 
     @Override
     public void draw()
@@ -68,20 +154,74 @@ public class Mesh extends Node
         {
             return;
         }
+
+        glBindVertexArray(this.vertexArrayObject);
+
+        // only need to set the buffer stuff when buffers are updated
+        int minVertexCount = -1;
+
+        int attributeIndex = 0;
+        int totalByteStrides = 0;
+        for (int i = 0; i < this.vertexBufferObjects.size(); i++)
+        {
+            BufferObject currentVertexBufferObject = this.vertexBufferObjects.get(i);
+            currentVertexBufferObject.use();
+
+            int currentDataType = currentVertexBufferObject.getDataType();
+            int currentFullElementStrides = currentVertexBufferObject.getFullElementStrides();
+
+            int currentBytesPerElement = BufferData.bytesOfType(currentDataType);
+            int currentFullByteStrides = currentFullElementStrides * currentBytesPerElement;
+            for (int stride:currentVertexBufferObject.strides)
+            {
+                // check total byte stride thing
+                // should have double attributes, not available for OpenGL < 4.1
+                if (currentVertexBufferObject.getDataType() != GL_INT)
+                {
+                    glVertexAttribPointer(attributeIndex, stride, currentDataType, false, currentFullByteStrides, totalByteStrides);
+                }
+                else
+                {
+                    glVertexAttribIPointer(attributeIndex, stride, currentDataType, currentFullByteStrides, totalByteStrides);
+                }
+                glEnableVertexAttribArray(attributeIndex);
+
+                attributeIndex += stride;
+                totalByteStrides += stride * currentBytesPerElement;
+            }
+
+            int vertexCount = BufferData.getDataLength(currentVertexBufferObject.getData()) / currentFullElementStrides;
+            if (minVertexCount == -1 || vertexCount < minVertexCount)
+            {
+                minVertexCount = vertexCount;
+            }
+
+            attributeIndex++;
+        }
+
+        // change to the other drawing function later for ebos?
+        glDrawArrays(GL_TRIANGLES, 0, minVertexCount);
         
-        glBindVertexArray(this.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, this.vbo);
+        // glBindVertexArray(this.vao);
+        // glBindBuffer(GL_ARRAY_BUFFER, this.vbo);
 
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(this.vertices.length);
-        buffer.put(vertices).flip();
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        // FloatBuffer buffer = BufferUtils.createFloatBuffer(this.vertices.length);
+        // buffer.put(vertices).flip();
+        // glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
-        glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(0, 3, GL_FLOAT, false, this.vertexSize * Float.BYTES, 0);
+        // glEnableVertexAttribArray(0);
+        // if (this.hasNormals)
+        // {
+        //     glVertexAttribPointer(1, 3, GL_FLOAT, )
+        // }
+        // if (this.hasUVs)
+        // {
+        //     glVertexAttribPointer(1, 2, GL_FLOAT, false, this.vertexSize * Float.BYTES, 3 * Float.BYTES);
+        //     glEnableVertexAttribArray(1);
+        // }
 
-        glDrawArrays(GL_TRIANGLES, 0, this.vertices.length / ((this.hasUv)? 5:3));
+        // glDrawArrays(GL_TRIANGLES, 0, this.vertexPositions.length);
 
         super.draw();
     }

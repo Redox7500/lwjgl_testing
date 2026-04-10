@@ -11,7 +11,6 @@ public class Camera extends Node
     private float far = 100;
     private Matrix4f projectionMatrix = new Matrix4f().perspective(this.fov, this.aspect, this.near, this.far);
 
-
     private boolean dirtyProjectionMatrix = false;
     private boolean dirtyProjectionValues = false;
 

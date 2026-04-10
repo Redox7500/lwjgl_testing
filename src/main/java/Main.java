@@ -1,10 +1,12 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
@@ -29,8 +31,12 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import com.mk.engine.buffers.BufferData;
+import com.mk.engine.buffers.BufferObject;
+import com.mk.engine.buffers.BufferObjectType;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
@@ -71,7 +77,27 @@ public class Main
         glEnable(GL_DEPTH_TEST);
 
         Node cube = new Node();
-        cube.addChild(new Mesh(new float[]{
+        // cube.addChild(new Mesh(new float[]{
+        //   // pos            // u v
+        //     -0.5f,-0.5f, 0.5f, 0,0,  0.5f,-0.5f, 0.5f, 1,0,  0.5f, 0.5f, 0.5f, 1,1,
+        //      0.5f, 0.5f, 0.5f, 1,1, -0.5f, 0.5f, 0.5f, 0,1, -0.5f,-0.5f, 0.5f, 0,0,
+
+        //      0.5f,-0.5f,-0.5f, 0,0, -0.5f,-0.5f,-0.5f, 1,0, -0.5f, 0.5f,-0.5f, 1,1,
+        //     -0.5f, 0.5f,-0.5f, 1,1,  0.5f, 0.5f,-0.5f, 0,1,  0.5f,-0.5f,-0.5f, 0,0,
+
+        //     -0.5f,-0.5f,-0.5f, 0,0, -0.5f,-0.5f, 0.5f, 1,0, -0.5f, 0.5f, 0.5f, 1,1,
+        //     -0.5f, 0.5f, 0.5f, 1,1, -0.5f, 0.5f,-0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0,
+
+        //      0.5f,-0.5f, 0.5f, 0,0,  0.5f,-0.5f,-0.5f, 1,0,  0.5f, 0.5f,-0.5f, 1,1,
+        //      0.5f, 0.5f,-0.5f, 1,1,  0.5f, 0.5f, 0.5f, 0,1,  0.5f,-0.5f, 0.5f, 0,0,
+
+        //     -0.5f, 0.5f, 0.5f, 0,0,  0.5f, 0.5f, 0.5f, 1,0,  0.5f, 0.5f,-0.5f, 1,1,
+        //      0.5f, 0.5f,-0.5f, 1,1, -0.5f, 0.5f,-0.5f, 0,1, -0.5f, 0.5f, 0.5f, 0,0,
+
+        //     -0.5f,-0.5f,-0.5f, 0,0,  0.5f,-0.5f,-0.5f, 1,0,  0.5f,-0.5f, 0.5f, 1,1,
+        //      0.5f,-0.5f, 0.5f, 1,1, -0.5f,-0.5f ,0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0
+        // }));
+        cube.addChild(new Mesh(new ArrayList<>(List.of(new BufferObject(BufferObjectType.VERTEX, BufferData.of(new float[]{
           // pos            // u v
             -0.5f,-0.5f, 0.5f, 0,0,  0.5f,-0.5f, 0.5f, 1,0,  0.5f, 0.5f, 0.5f, 1,1,
              0.5f, 0.5f, 0.5f, 1,1, -0.5f, 0.5f, 0.5f, 0,1, -0.5f,-0.5f, 0.5f, 0,0,
@@ -90,7 +116,7 @@ public class Main
 
             -0.5f,-0.5f,-0.5f, 0,0,  0.5f,-0.5f,-0.5f, 1,0,  0.5f,-0.5f, 0.5f, 1,1,
              0.5f,-0.5f, 0.5f, 1,1, -0.5f,-0.5f ,0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0
-        }));
+        }), GL_STATIC_DRAW, new ArrayList<>(List.of(3, 2)))))));
 
         Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
 
@@ -98,14 +124,14 @@ public class Main
         camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
         
         ShaderProgram shaderProgram = new ShaderProgram(
-            loadText("/shaders/phong/main.vert"),
-            loadText("/shaders/phong/main.frag")
+            loadText("/shaders/basic/main.vert"),
+            loadText("/shaders/basic/main.frag")
         );
 
         float startTime = (float)glfwGetTime();
         float lastFrameTime = startTime;
         float currentFrameTime;
-        float elapsedTime = 0;
+        float elapsedTime;
         float deltaTime;
 
         while (!glfwWindowShouldClose(window))
@@ -121,23 +147,23 @@ public class Main
 
             shaderProgram.use();
 
-            // shaderProgram.setUniforms(Map.of(
-            //     "mvp", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.localTransform.getMatrix())),
-            //     "tex", Uniform.of(cubeTexture.use())
-            // ));
-            shaderProgram.setUniforms(Map.ofEntries(
-                Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
-                Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
-                Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
-                Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
-                Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
-                Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
-                Map.entry("uAmbientStrength",   Uniform.of(0.2f)),
-                Map.entry("uDiffuseStrength",   Uniform.of(0.2f)),
-                Map.entry("uSpecularStrength",  Uniform.of(0.2f)),
-                Map.entry("uSpecularShininess", Uniform.of(32)),
-                Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
+            shaderProgram.setUniforms(Map.of(
+                "uModelViewProjection", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.globalTransform.getMatrix())),
+                "uTexture", Uniform.of(cubeTexture.use())
             ));
+            // shaderProgram.setUniforms(Map.ofEntries(
+            //     Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
+            //     Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
+            //     Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
+            //     // Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
+            //     // Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
+            //     // Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
+            //     // Map.entry("uAmbientStrength",   Uniform.of(0.2f)),
+            //     // Map.entry("uDiffuseStrength",   Uniform.of(0.2f)),
+            //     // Map.entry("uSpecularStrength",  Uniform.of(0.2f)),
+            //     // Map.entry("uSpecularShininess", Uniform.of(32)),
+            //     Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
+            // ));
 
             cube.draw();
 

@@ -1,6 +1,7 @@
 package com.mk.engine.nodes;
 
-public enum TransformType {
+public enum TransformType
+{
     LOCAL,
     GLOBAL
 };

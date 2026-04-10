@@ -1,3 +1,5 @@
+// add dirty thing maybe? for local and global transforms
+
 package com.mk.engine.nodes;
 
 import org.joml.Matrix4f;
