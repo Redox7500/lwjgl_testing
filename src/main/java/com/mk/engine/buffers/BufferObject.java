@@ -5,54 +5,33 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
-// import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-// import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-
-// enum ArrayBufferType
-// {
-//     VERTEX(GL_ARRAY_BUFFER),
-//     ELEMENT(GL_ELEMENT_ARRAY_BUFFER);
-
-//     private final int type;
-
-//     ArrayBufferType(int type)
-//     {
-//         this.type = type;
-//     }
-
-
-//     public int get()
-//     {
-//         return this.type;
-//     }
-// };
 
 public class BufferObject
 {
-    public BufferObjectType type;
+    public int type;
     public List<Integer> strides = new ArrayList<>(List.of(1));
 
     private int id = glGenBuffers();
     private BufferData data;
 
-    public BufferObject(BufferObjectType type)
+    public BufferObject(int type)
     {
         this.type = type;
     }
 
-    public BufferObject(BufferObjectType type, BufferData data, int drawType)
+    public BufferObject(int type, BufferData data, int drawType)
     {
         this.type = type;
         this.setData(data, drawType);
     }
 
-    public BufferObject(BufferObjectType type, List<Integer> strides)
+    public BufferObject(int type, List<Integer> strides)
     {
         this.type = type;
         this.strides = strides;
     }
 
-    public BufferObject(BufferObjectType type, BufferData data, int drawType, List<Integer> strides)
+    public BufferObject(int type, BufferData data, int drawType, List<Integer> strides)
     {
         this.type = type;
         this.setData(data, drawType);
@@ -62,7 +41,7 @@ public class BufferObject
     private void updateBufferData(int drawType)
     {
         this.use();
-        this.data.use(this.type.value(), drawType);
+        this.data.use(this.type, drawType);
     }
 
     public BufferData getData()
@@ -94,6 +73,6 @@ public class BufferObject
 
     public void use()
     {
-        glBindBuffer(this.type.value(), this.id);
+        glBindBuffer(this.type, this.id);
     }
 }

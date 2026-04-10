@@ -14,20 +14,6 @@ import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL11.GL_SHORT;
 import static org.lwjgl.opengl.GL15.glBufferData;
 
-// public sealed interface BufferData
-//     permits FloatBufferData, DoubleBufferData, ByteBufferData, ShortBufferData, IntBufferData
-// {
-//     public Object getData();
-//     public void setData(Array data);
-//     public Buffer getBuffer();
-
-//     public static BufferData of(float[] data) {return new FloatBufferData(data);}
-//     public static BufferData of(double[] data) {return new DoubleBufferData(data);}
-//     public static BufferData of(byte[] data) {return new ByteBufferData(data);}
-//     public static BufferData of(short[] data) {return new ShortBufferData(data);}
-//     public static BufferData of(int[] data) {return new IntBufferData(data);}
-// }
-
 public sealed interface BufferData
     permits FloatBufferData, DoubleBufferData, ByteBufferData, ShortBufferData, IntBufferData
 {
@@ -62,26 +48,6 @@ public sealed interface BufferData
             default -> 0; // wtf
         };
     }
-
-    // public static int getType(BufferData bufferData)
-    // {
-    //     return switch (bufferData)
-    //     {
-    //         case FloatBufferData _ -> GL_FLOAT;
-    //         case DoubleBufferData _ -> GL_DOUBLE;
-    //         case ByteBufferData _ -> GL_BYTE;
-    //         case ShortBufferData _ -> GL_SHORT;
-    //         case IntBufferData _ -> GL_INT;
-    //     };
-    // }
-
-    // public static void use(BufferData bufferData)
-    // {
-    //     switch (bufferData)
-    //     {
-    //         case FloatBufferData data -> {FloatBuffer buffer = BufferUtils.createFloatBuffer(data.data.length); glBufferData(bufferObjectType, buffer.put(data.data).flip(), drawType);}
-    //     }
-    // }
     
     public BufferData copy();
     public int getType();
@@ -91,34 +57,6 @@ public sealed interface BufferData
 // somehow make it so that you can more easily change the buffer data instead of making a whole new buffer?
 
 // somehow add dirty flag for regenerating buffer?
-
-// final class FloatBufferData implements BufferData
-// {
-//     private float[] data;
-//     private FloatBuffer buffer;
-
-//     public FloatBufferData(float[] data)
-//     {
-//         this.data = data;
-//     }
-
-//     public float[] getData()
-//     {
-//         return this.data;
-//     }
-
-//     public void setData(float[] data)
-//     {
-//         this.data = data;
-//     }
-
-//     @Override
-//     public Buffer getBuffer()
-//     {
-//         this.buffer = BufferUtils.createFloatBuffer(this.data.length);
-//         this.buffer.put(this.data).flip();
-//     }
-// };
 
 final class FloatBufferData implements BufferData
 {

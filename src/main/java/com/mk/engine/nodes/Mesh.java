@@ -1,10 +1,5 @@
 package com.mk.engine.nodes;
 
-// import java.nio.FloatBuffer;
-
-// import org.joml.Matrix4f;
-// import org.lwjgl.BufferUtils;
-// import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +17,9 @@ import com.mk.engine.buffers.BufferObject;
 
 public class Mesh extends Node
 {
-    // private float[] vertexPositions;
-    // private float[] vertexNormals;
-    // private int[] vertexUVs;
-    // private int vertexSize = 3;
     public List<BufferObject> vertexBufferObjects = new ArrayList<>();
 
     private int vertexArrayObject = glGenVertexArrays();
-    // private int vao = glGenVertexArrays();
-    // private int vbo = glGenBuffers();
 
     public Mesh()
     {
@@ -42,11 +31,6 @@ public class Mesh extends Node
         super();
 
         this.vertexBufferObjects = vertexBufferObjects;
-
-        // for (VertexData vertexData:verticesData)
-        // {
-        //     vertexBuffers.put(glGenBuffers(), vertexData);
-        // }
     }
 
     public Mesh(Transform transform, List<BufferObject> vertexBufferObjects)
@@ -54,98 +38,7 @@ public class Mesh extends Node
         super(transform);
 
         this.vertexBufferObjects = vertexBufferObjects;
-        // for (VertexData vertexData:verticesData)
-        // {
-        //     vertexBuffers.put(glGenBuffers(), vertexData);
-        // }
     }
-
-    // public add
-
-    // public Mesh(float[] vertexPositions, float[] vertexNormals, int[] vertexUVs)
-    // {
-    //     super();
-
-    //     this.vertexPositions = vertexPositions;
-    //     this.vertexNormals = vertexNormals;
-    //     this.vertexUVs = vertexUVs;
-    // }
-
-    // public Mesh(float[] vertexPositions, float[] vertexNormals)
-    // {
-    //     super();
-
-    //     this.vertexPositions = vertexPositions;
-    //     this.vertexNormals = vertexNormals;
-    // }
-
-    // public Mesh(float[] vertexPositions, int[] vertexUVs)
-    // {
-    //     super();
-
-    //     this.vertexPositions = vertexPositions;
-    //     this.vertexUVs = vertexUVs;
-    // }
-
-    // public Mesh(float[] vertexPositions)
-    // {
-    //     super();
-
-    //     this.vertexPositions = vertexPositions;
-    // }
-
-    // public Mesh(float[] vertexPositions, boolean generateNormals, boolean generateUVs)
-    // {
-    //     super();
-
-    //     this.vertexPositions = vertexPositions;
-
-    //     if (generateNormals)
-    //     {
-            
-    //     }
-    //     if (generateUVs)
-    //     {
-            
-    //     }
-
-    //     this.vertexSize += ((this.vertexNormals != null)? 3:0) + ((this.vertexUVs != null)? 2:0);
-    // }
-
-    // public Mesh(Matrix4f transform, float[] vertexPositions, float[] vertexNormals, int[] )
-
-    // public Mesh(Matrix4f transform, float[] vertexPositions)
-    // {
-    //     super(transform);
-
-    //     this.vertexPositions = vertexPositions;
-    // }
-
-    // public Mesh(Matrix4f transform, float[] vertexPositions, boolean generateNormals, boolean generateUVs)
-    // {
-    //     super(transform);
-
-    //     this(vertexPositions, generateNormals, generateUVs);
-
-    //     // this.vertices = vertices;
-        
-    //     this.vertexSize += ((this.vertexNormals != null)? 3:0) + ((this.vertexUVs != null)? 2:0);
-    // }
-
-    // public float[] getVertices()
-    // {
-    //     return this.vertexPositions.clone();
-    // }
-
-    // public float[] getNormals()
-    // {
-    //     return (this.vertexNormals != null)? this.vertexNormals.clone():null;
-    // }
-
-    // public int[] getUVs()
-    // {
-    //     return (this.vertexUVs != null)? this.vertexUVs.clone():null;
-    // }
 
     @Override
     public void draw()
