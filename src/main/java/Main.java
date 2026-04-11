@@ -31,12 +31,11 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.mk.engine.buffers.BufferData;
-import com.mk.engine.buffers.BufferObject;
+import com.mk.engine.buffers.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
@@ -77,7 +76,7 @@ public class Main
         glEnable(GL_DEPTH_TEST);
 
         Node cube = new Node();
-        cube.addChild(new Mesh(new ArrayList<>(List.of(new BufferObject(GL_ARRAY_BUFFER, BufferData.of(new float[]{
+        cube.addChild(new Mesh(new ArrayList<>(List.of(new VertexBufferObject(BufferData.of(new float[]{
           // pos            // u v
             -0.5f,-0.5f, 0.5f, 0,0,  0.5f,-0.5f, 0.5f, 1,0,  0.5f, 0.5f, 0.5f, 1,1,
              0.5f, 0.5f, 0.5f, 1,1, -0.5f, 0.5f, 0.5f, 0,1, -0.5f,-0.5f, 0.5f, 0,0,

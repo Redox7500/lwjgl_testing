@@ -12,7 +12,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
 
-import com.mk.engine.buffers.BufferData;
 import com.mk.engine.buffers.BufferObject;
 
 public class Mesh extends Node
@@ -63,7 +62,7 @@ public class Mesh extends Node
             int currentDataType = currentVertexBufferObject.getDataType();
             int currentFullElementStrides = currentVertexBufferObject.getFullElementStrides();
 
-            int currentBytesPerElement = BufferData.bytesOfType(currentDataType);
+            int currentBytesPerElement = currentVertexBufferObject.getDataTypeBytes();
             int currentFullByteStrides = currentFullElementStrides * currentBytesPerElement;
             for (int stride:currentVertexBufferObject.strides)
             {
@@ -83,7 +82,7 @@ public class Mesh extends Node
                 totalByteStrides += stride * currentBytesPerElement;
             }
 
-            int vertexCount = BufferData.getDataLength(currentVertexBufferObject.getData()) / currentFullElementStrides;
+            int vertexCount = currentVertexBufferObject.getDataLength() / currentFullElementStrides;
             if (minVertexCount == -1 || vertexCount < minVertexCount)
             {
                 minVertexCount = vertexCount;
@@ -94,6 +93,8 @@ public class Mesh extends Node
 
         // change to the other drawing function later for ebos?
         glDrawArrays(GL_TRIANGLES, 0, minVertexCount);
+
+        glBindVertexArray(0);
         
         // glBindVertexArray(this.vao);
         // glBindBuffer(GL_ARRAY_BUFFER, this.vbo);

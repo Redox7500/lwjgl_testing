@@ -25,16 +25,16 @@ public class BufferObject
         this.setData(data, drawType);
     }
 
-    public BufferObject(int type, List<Integer> strides)
-    {
-        this.type = type;
-        this.strides = strides;
-    }
-
     public BufferObject(int type, BufferData data, int drawType, List<Integer> strides)
     {
         this.type = type;
         this.setData(data, drawType);
+        this.strides = strides;
+    }
+
+    public BufferObject(int type, List<Integer> strides)
+    {
+        this.type = type;
         this.strides = strides;
     }
 
@@ -58,6 +58,16 @@ public class BufferObject
     public int getDataType()
     {
         return this.data.getType();
+    }
+
+    public int getDataTypeBytes()
+    {
+        return this.data.getTypeBytes();
+    }
+
+    public int getDataLength()
+    {
+        return this.data.getLength();
     }
 
     public int getFullElementStrides()

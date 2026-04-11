@@ -12,45 +12,59 @@ import static org.lwjgl.opengl.GL11.GL_DOUBLE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL11.GL_SHORT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT;
 import static org.lwjgl.opengl.GL15.glBufferData;
 
+// public class BufferData<T> extends Object
+// {
+//     private final UnaryOperator<T> copier = array -> array.clone();
+//     private T data;
+
+//     public T getData()
+//     {
+//         return copier.apply(data);
+//     }
+
+//     public void setData(T data)
+//     {
+//         this.data = copier.apply(data);
+//     }
+// }
+
+// public class BufferData
+// {
+//     private byte[] byteArray;
+//     private short[] shortArray;
+//     private int[] intArray;
+//     private float[] floatArray;
+//     private double[] doubleArray;
+
+//     public BufferData(byte[] byteArray)
+//     {
+//         this.setData(byteArray);
+//     }
+
+//     public Object
+// }
+
 public sealed interface BufferData
-    permits FloatBufferData, DoubleBufferData, ByteBufferData, ShortBufferData, IntBufferData
+    permits ByteBufferData, ShortBufferData, IntBufferData, FloatBufferData, DoubleBufferData, UnsignedByteBufferData, UnsignedShortBufferData, UnsignedIntBufferData
 {
-    public static BufferData of(float[] value) {return new FloatBufferData(value);}
-    public static BufferData of(double[] value) {return new DoubleBufferData(value);}
     public static BufferData of(byte[] value) {return new ByteBufferData(value);}
     public static BufferData of(short[] value) {return new ShortBufferData(value);}
     public static BufferData of(int[] value) {return new IntBufferData(value);}
-
-    public static int getDataLength(BufferData bufferData)
-    {
-        return switch (bufferData)
-        {
-            case FloatBufferData data -> data.data.length;
-            case DoubleBufferData data -> data.data.length;
-            case ByteBufferData data -> data.data.length;
-            case ShortBufferData data -> data.data.length;
-            case IntBufferData data -> data.data.length;
-            default -> 0;
-        };
-    }
-
-    public static int bytesOfType(int type)
-    {
-        return switch (type)
-        {
-            case GL_FLOAT -> Float.BYTES;
-            case GL_DOUBLE -> Double.BYTES;
-            case GL_BYTE -> Byte.BYTES; // dumb
-            case GL_SHORT -> Short.BYTES;
-            case GL_INT -> Integer.BYTES;
-            default -> 0; // wtf
-        };
-    }
+    public static BufferData of(float[] value) {return new FloatBufferData(value);}
+    public static BufferData of(double[] value) {return new DoubleBufferData(value);}
+    public static BufferData ofUnsigned(byte[] value) {return new UnsignedByteBufferData(value);}
+    public static BufferData ofUnsigned(short[] value) {return new UnsignedShortBufferData(value);}
+    public static BufferData ofUnsigned(int[] value) {return new UnsignedIntBufferData(value);}
     
     public BufferData copy();
     public int getType();
+    public int getTypeBytes();
+    public int getLength();
     public void use(int bufferObjectType, int drawType);
 }
 
@@ -58,67 +72,9 @@ public sealed interface BufferData
 
 // somehow add dirty flag for regenerating buffer?
 
-final class FloatBufferData implements BufferData
-{
-    public float[] data;
-
-    public FloatBufferData(float[] data)
-    {
-        this.data = data;
-    }
-
-    @Override
-    public FloatBufferData copy()
-    {
-        return new FloatBufferData(this.data.clone());
-    }
-
-    @Override
-    public int getType()
-    {
-        return GL_FLOAT;
-    }
-
-    @Override
-    public void use(int bufferObjectType, int drawType)
-    {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(this.data.length);
-        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
-    }
-}
-
-final class DoubleBufferData implements BufferData
-{
-    public double[] data;
-
-    public DoubleBufferData(double[] data)
-    {
-        this.data = data;
-    }
-
-    @Override
-    public DoubleBufferData copy()
-    {
-        return new DoubleBufferData(this.data.clone());
-    }
-
-    @Override
-    public int getType()
-    {
-        return GL_DOUBLE;
-    }
-
-    @Override
-    public void use(int bufferObjectType, int drawType)
-    {
-        DoubleBuffer buffer = BufferUtils.createDoubleBuffer(this.data.length);
-        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
-    }
-}
-
 final class ByteBufferData implements BufferData
 {
-    public byte[] data;
+    byte[] data;
 
     public ByteBufferData(byte[] data)
     {
@@ -138,6 +94,18 @@ final class ByteBufferData implements BufferData
     }
 
     @Override
+    public int getTypeBytes()
+    {
+        return Byte.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
     public void use(int bufferObjectType, int drawType)
     {
         ByteBuffer buffer = BufferUtils.createByteBuffer(this.data.length);
@@ -147,7 +115,7 @@ final class ByteBufferData implements BufferData
 
 final class ShortBufferData implements BufferData
 {
-    public short[] data;
+    short[] data;
 
     public ShortBufferData(short[] data)
     {
@@ -167,6 +135,18 @@ final class ShortBufferData implements BufferData
     }
 
     @Override
+    public int getTypeBytes()
+    {
+        return Short.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
     public void use(int bufferObjectType, int drawType)
     {
         ShortBuffer buffer = BufferUtils.createShortBuffer(this.data.length);
@@ -176,7 +156,7 @@ final class ShortBufferData implements BufferData
 
 final class IntBufferData implements BufferData
 {
-    public int[] data;
+    int[] data;
 
     public IntBufferData(int[] data)
     {
@@ -193,6 +173,223 @@ final class IntBufferData implements BufferData
     public int getType()
     {
         return GL_INT;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Integer.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
+    public void use(int bufferObjectType, int drawType)
+    {
+        IntBuffer buffer = BufferUtils.createIntBuffer(this.data.length);
+        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
+    }
+}
+
+final class FloatBufferData implements BufferData
+{
+    float[] data;
+
+    public FloatBufferData(float[] data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public FloatBufferData copy()
+    {
+        return new FloatBufferData(this.data.clone());
+    }
+
+    @Override
+    public int getType()
+    {
+        return GL_FLOAT;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Float.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
+    public void use(int bufferObjectType, int drawType)
+    {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(this.data.length);
+        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
+    }
+}
+
+final class DoubleBufferData implements BufferData
+{
+    double[] data;
+
+    public DoubleBufferData(double[] data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public DoubleBufferData copy()
+    {
+        return new DoubleBufferData(this.data.clone());
+    }
+
+    @Override
+    public int getType()
+    {
+        return GL_DOUBLE;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Double.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
+    public void use(int bufferObjectType, int drawType)
+    {
+        DoubleBuffer buffer = BufferUtils.createDoubleBuffer(this.data.length);
+        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
+    }
+}
+
+final class UnsignedByteBufferData implements BufferData
+{
+    byte[] data;
+
+    public UnsignedByteBufferData(byte[] data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public UnsignedByteBufferData copy()
+    {
+        return new UnsignedByteBufferData(this.data.clone());
+    }
+
+    @Override
+    public int getType()
+    {
+        return GL_UNSIGNED_BYTE;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Byte.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
+    public void use(int bufferObjectType, int drawType)
+    {
+        ByteBuffer buffer = BufferUtils.createByteBuffer(this.data.length);
+        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
+    }
+}
+
+final class UnsignedShortBufferData implements BufferData
+{
+    short[] data;
+
+    public UnsignedShortBufferData(short[] data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public ShortBufferData copy()
+    {
+        return new ShortBufferData(this.data.clone());
+    }
+
+    @Override
+    public int getType()
+    {
+        return GL_UNSIGNED_SHORT;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Short.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
+    }
+
+    @Override
+    public void use(int bufferObjectType, int drawType)
+    {
+        ShortBuffer buffer = BufferUtils.createShortBuffer(this.data.length);
+        glBufferData(bufferObjectType, buffer.put(this.data).flip(), drawType);
+    }
+}
+
+final class UnsignedIntBufferData implements BufferData
+{
+    int[] data;
+
+    public UnsignedIntBufferData(int[] data)
+    {
+        this.data = data;
+    }
+
+    @Override
+    public IntBufferData copy()
+    {
+        return new IntBufferData(this.data.clone());
+    }
+
+    @Override
+    public int getType()
+    {
+        return GL_UNSIGNED_INT;
+    }
+
+    @Override
+    public int getTypeBytes()
+    {
+        return Integer.BYTES;
+    }
+
+    @Override
+    public int getLength()
+    {
+        return this.data.length;
     }
 
     @Override
