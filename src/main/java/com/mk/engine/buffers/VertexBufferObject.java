@@ -4,7 +4,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 
-public class VertexBufferObject extends BufferObject
+public class VertexBufferObject extends BufferObject<BufferData>
 {
     public VertexBufferObject()
     {
@@ -24,5 +24,17 @@ public class VertexBufferObject extends BufferObject
     public VertexBufferObject(List<Integer> strides)
     {
         super(GL_ARRAY_BUFFER, strides);
+    }
+
+    @Override
+    public BufferData getData()
+    {
+        return this.data.copy();
+    }
+
+    @Override
+    public void setData(BufferData data, int drawType)
+    {
+        super.setData(data.copy(), drawType);
     }
 }

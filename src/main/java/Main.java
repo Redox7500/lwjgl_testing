@@ -28,13 +28,15 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGetError;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import com.mk.engine.buffers.BufferData;
+import com.mk.engine.buffers.FloatBufferData;
 import com.mk.engine.buffers.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
@@ -58,8 +60,8 @@ public class Main
         int WINDOW_WIDTH = 800;
         int WINDOW_HEIGHT = 600;
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // macOS
 
@@ -76,7 +78,7 @@ public class Main
         glEnable(GL_DEPTH_TEST);
 
         Node cube = new Node();
-        cube.addChild(new Mesh(new ArrayList<>(List.of(new VertexBufferObject(BufferData.of(new float[]{
+        cube.addChild(new Mesh(new ArrayList<>(List.of(new VertexBufferObject(new FloatBufferData(new float[]{
           // pos            // u v
             -0.5f,-0.5f, 0.5f, 0,0,  0.5f,-0.5f, 0.5f, 1,0,  0.5f, 0.5f, 0.5f, 1,1,
              0.5f, 0.5f, 0.5f, 1,1, -0.5f, 0.5f, 0.5f, 0,1, -0.5f,-0.5f, 0.5f, 0,0,
@@ -96,6 +98,8 @@ public class Main
             -0.5f,-0.5f,-0.5f, 0,0,  0.5f,-0.5f,-0.5f, 1,0,  0.5f,-0.5f, 0.5f, 1,1,
              0.5f,-0.5f, 0.5f, 1,1, -0.5f,-0.5f ,0.5f, 0,1, -0.5f,-0.5f,-0.5f, 0,0
         }), GL_STATIC_DRAW, new ArrayList<>(List.of(3, 2)))))));
+
+        glCheckErrors("mesh creation");
 
         Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
 
@@ -146,6 +150,8 @@ public class Main
 
             cube.draw();
 
+            glCheckErrors("drawing");
+
             glfwSwapBuffers(window);
             glfwPollEvents();
 
@@ -155,7 +161,7 @@ public class Main
         glfwTerminate();
     }
 
-    static String loadText(String path)
+    private static String loadText(String path)
     {
         try (InputStream in = Main.class.getResourceAsStream(path))
         {
@@ -168,6 +174,15 @@ public class Main
         catch (IOException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void glCheckErrors(String label)
+    {
+        int error;
+        while ((error = glGetError()) != GL_NO_ERROR)
+        {
+            throw new IllegalStateException(label + " encountered OpenGL error 0x" + Integer.toHexString(error));
         }
     }
 }

@@ -3,40 +3,109 @@ package com.mk.engine.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.GL_DOUBLE;
 import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL11.glGetInteger;
+import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
+import static org.lwjgl.opengl.GL41.glVertexAttribLPointer;
 
-import com.mk.engine.buffers.BufferObject;
+import com.mk.engine.buffers.ElementBufferObject;
+import com.mk.engine.buffers.VertexBufferObject;
 
 public class Mesh extends Node
 {
-    public List<BufferObject> vertexBufferObjects = new ArrayList<>();
+    public List<VertexBufferObject> vertexBufferObjects = new ArrayList<>();
+    public ElementBufferObject elementBufferObject = null;
 
-    private int vertexArrayObject = glGenVertexArrays();
+    private int vertexArrayObjectId = glGenVertexArrays();
+    private int toBeDrawn = 0;
 
     public Mesh()
     {
         super();
+
+        this.updateVertexArrayObject();
     }
 
-    public Mesh(List<BufferObject> vertexBufferObjects)
+    public Mesh(List<VertexBufferObject> vertexBufferObjects)
     {
         super();
 
         this.vertexBufferObjects = vertexBufferObjects;
+
+        this.updateVertexArrayObject();
     }
 
-    public Mesh(Transform transform, List<BufferObject> vertexBufferObjects)
+    public Mesh(Transform transform, List<VertexBufferObject> vertexBufferObjects)
     {
         super(transform);
 
         this.vertexBufferObjects = vertexBufferObjects;
+
+        this.updateVertexArrayObject();
+    }
+
+    public void updateVertexArrayObject()
+    {
+        int maxAttributes = glGetInteger(GL_MAX_VERTEX_ATTRIBS);
+
+        glBindVertexArray(this.vertexArrayObjectId);
+
+        toBeDrawn = Integer.MAX_VALUE;
+
+        int attributeLocation = 0;
+        for (int i = 0; i < this.vertexBufferObjects.size(); i++)
+        {
+            VertexBufferObject currentVertexBufferObject = this.vertexBufferObjects.get(i);
+            currentVertexBufferObject.use();
+
+            int currentDataType = currentVertexBufferObject.getDataType();
+            int currentFullElementStrides = currentVertexBufferObject.getFullElementStrides();
+
+            int currentBytesPerElement = currentVertexBufferObject.getDataTypeBytes();
+            int currentFullByteStrides = currentFullElementStrides * currentBytesPerElement;
+            int totalByteStrides = 0;
+            for (int stride:currentVertexBufferObject.strides)
+            {
+                if (attributeLocation >= maxAttributes)
+                {
+                    throw new IllegalStateException("More vertex attributes than GL_MAX_VERTEX_ATTRIBS, which is " + maxAttributes);
+                }
+
+                switch (currentDataType)
+                {
+                    case GL_INT -> glVertexAttribIPointer(attributeLocation, stride, currentDataType, currentFullByteStrides, totalByteStrides);
+                    case GL_DOUBLE -> glVertexAttribLPointer(attributeLocation, stride, currentDataType, currentFullByteStrides, totalByteStrides);
+                    default -> glVertexAttribPointer(attributeLocation, stride, currentDataType, false, currentFullByteStrides, totalByteStrides);
+                }
+                glEnableVertexAttribArray(attributeLocation);
+
+                attributeLocation++;
+                totalByteStrides += stride * currentBytesPerElement;
+            }
+
+            int currentVertexCount = currentVertexBufferObject.getDataLength() / currentFullElementStrides;
+            if (currentVertexCount < toBeDrawn)
+            {
+                toBeDrawn = currentVertexCount;
+            }
+        }
+
+        if (this.elementBufferObject != null)
+        {
+            this.elementBufferObject.use();
+            toBeDrawn = Math.min(this.elementBufferObject.getDataLength(), toBeDrawn);
+        }
+
+        glBindVertexArray(0);
     }
 
     @Override
@@ -47,75 +116,16 @@ public class Mesh extends Node
             return;
         }
 
-        glBindVertexArray(this.vertexArrayObject);
+        glBindVertexArray(this.vertexArrayObjectId);
 
-        // only need to set the buffer stuff when buffers are updated
-        int minVertexCount = -1;
-
-        int attributeIndex = 0;
-        int totalByteStrides = 0;
-        for (int i = 0; i < this.vertexBufferObjects.size(); i++)
+        if (this.elementBufferObject != null)
         {
-            BufferObject currentVertexBufferObject = this.vertexBufferObjects.get(i);
-            currentVertexBufferObject.use();
-
-            int currentDataType = currentVertexBufferObject.getDataType();
-            int currentFullElementStrides = currentVertexBufferObject.getFullElementStrides();
-
-            int currentBytesPerElement = currentVertexBufferObject.getDataTypeBytes();
-            int currentFullByteStrides = currentFullElementStrides * currentBytesPerElement;
-            for (int stride:currentVertexBufferObject.strides)
-            {
-                // check total byte stride thing
-                // should have double attributes, not available for OpenGL < 4.1
-                if (currentVertexBufferObject.getDataType() != GL_INT)
-                {
-                    glVertexAttribPointer(attributeIndex, stride, currentDataType, false, currentFullByteStrides, totalByteStrides);
-                }
-                else
-                {
-                    glVertexAttribIPointer(attributeIndex, stride, currentDataType, currentFullByteStrides, totalByteStrides);
-                }
-                glEnableVertexAttribArray(attributeIndex);
-
-                attributeIndex += stride;
-                totalByteStrides += stride * currentBytesPerElement;
-            }
-
-            int vertexCount = currentVertexBufferObject.getDataLength() / currentFullElementStrides;
-            if (minVertexCount == -1 || vertexCount < minVertexCount)
-            {
-                minVertexCount = vertexCount;
-            }
-
-            attributeIndex++;
+            glDrawElements(GL_TRIANGLES, toBeDrawn, this.elementBufferObject.getDataType(), 0);
         }
-
-        // change to the other drawing function later for ebos?
-        glDrawArrays(GL_TRIANGLES, 0, minVertexCount);
-
-        glBindVertexArray(0);
-        
-        // glBindVertexArray(this.vao);
-        // glBindBuffer(GL_ARRAY_BUFFER, this.vbo);
-
-        // FloatBuffer buffer = BufferUtils.createFloatBuffer(this.vertices.length);
-        // buffer.put(vertices).flip();
-        // glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-
-        // glVertexAttribPointer(0, 3, GL_FLOAT, false, this.vertexSize * Float.BYTES, 0);
-        // glEnableVertexAttribArray(0);
-        // if (this.hasNormals)
-        // {
-        //     glVertexAttribPointer(1, 3, GL_FLOAT, )
-        // }
-        // if (this.hasUVs)
-        // {
-        //     glVertexAttribPointer(1, 2, GL_FLOAT, false, this.vertexSize * Float.BYTES, 3 * Float.BYTES);
-        //     glEnableVertexAttribArray(1);
-        // }
-
-        // glDrawArrays(GL_TRIANGLES, 0, this.vertexPositions.length);
+        else
+        {
+            glDrawArrays(GL_TRIANGLES, 0, toBeDrawn);
+        }
 
         super.draw();
     }
