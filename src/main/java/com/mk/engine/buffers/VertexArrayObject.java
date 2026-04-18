@@ -99,20 +99,6 @@ public class VertexArrayObject
             this.vertexBufferObjects.get(index).setVertexArrayObject(null);
             this.vertexBufferObjects.remove(index);
         }
-        // for (int i = 0; i < indices.length / 2; i++)
-        // {
-        //     // put second loop in here somehow
-        //     // oh wait just read backwards ig, so i--
-        //     int swapIndex = indices.length - 1 - i;
-        //     int toSwap = indices[i];
-        //     indices[i] = indices[swapIndex];
-        //     indices[swapIndex] = toSwap;
-        // }
-        // for (int index:indices)
-        // {
-
-        // }
-        // this.vertexBufferObjects.removeAll(indices);
     }
 
     public void removeAllVertexBufferObjects()

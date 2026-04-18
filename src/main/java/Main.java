@@ -36,7 +36,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.mk.engine.buffers.FloatBufferData;
 import com.mk.engine.buffers.UnsignedByteBufferData;
-import com.mk.engine.buffers.UnsignedShortBufferData;
 import com.mk.engine.buffers.VertexArrayObject;
 import com.mk.engine.buffers.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
@@ -113,40 +112,6 @@ public class Main
             0,0, 1,0, 1,1,
             1,1, 0,1, 0,0
         }), arrayListOf(2))))));
-        // cube.addChild(new Mesh(arrayListOf(new VertexBufferObject(new FloatBufferData(new float[]{
-        //   // pos
-        //     -0.5f,-0.5f, 0.5f,  0.5f,-0.5f, 0.5f,  0.5f, 0.5f, 0.5f,
-        //      0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f,-0.5f, 0.5f,
-
-        //      0.5f,-0.5f,-0.5f, -0.5f,-0.5f,-0.5f, -0.5f, 0.5f,-0.5f,
-        //     -0.5f, 0.5f,-0.5f,  0.5f, 0.5f,-0.5f,  0.5f,-0.5f,-0.5f,
-
-        //     -0.5f,-0.5f,-0.5f, -0.5f,-0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
-        //     -0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f,
-
-        //      0.5f,-0.5f, 0.5f,  0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,
-        //      0.5f, 0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f,-0.5f, 0.5f,
-
-        //     -0.5f, 0.5f, 0.5f,  0.5f, 0.5f, 0.5f,  0.5f, 0.5f,-0.5f,
-        //      0.5f, 0.5f,-0.5f, -0.5f, 0.5f,-0.5f, -0.5f, 0.5f, 0.5f,
-
-        //     -0.5f,-0.5f,-0.5f,  0.5f,-0.5f,-0.5f,  0.5f,-0.5f, 0.5f,
-        //      0.5f,-0.5f, 0.5f, -0.5f,-0.5f ,0.5f, -0.5f,-0.5f,-0.5f
-        // }), GL_STATIC_DRAW, arrayListOf(3)), new VertexBufferObject(new UnsignedByteBufferData(new short[]{
-        //  // u v
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0,
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0,
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0,
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0,
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0,
-        //     0,0, 1,0, 1,1,
-        //     1,1, 0,1, 0,0
-        // }), GL_STATIC_DRAW, arrayListOf(2)))));
 
         Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
 
