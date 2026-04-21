@@ -34,10 +34,10 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import com.mk.engine.buffers.FloatBufferData;
-import com.mk.engine.buffers.UnsignedByteBufferData;
-import com.mk.engine.buffers.VertexArrayObject;
-import com.mk.engine.buffers.VertexBufferObject;
+import com.mk.engine.buffers.data.FloatBufferData;
+import com.mk.engine.buffers.data.UnsignedByteBufferData;
+import com.mk.engine.buffers.objects.VertexArrayObject;
+import com.mk.engine.buffers.bufferobjects.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
