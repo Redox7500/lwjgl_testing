@@ -1,4 +1,5 @@
 package com.mk.engine.buffers.data;
+
 // {
 //     private final UnaryOperator<T> copier = array -> array.clone();
 //     private T data;
@@ -14,20 +15,110 @@ package com.mk.engine.buffers.data;
 //     }
 // }
 
+// public class BufferData<T extends Number>
+// {
+
+// }
+
+// enum BufferDataType
+// {
+//     BYTE,
+//     SHORT,
+//     INT,
+//     FLOAT,
+//     DOUBLE
+// }
+
 // public class BufferData
 // {
-//     private byte[] byteArray;
-//     private short[] shortArray;
-//     private int[] intArray;
-//     private float[] floatArray;
-//     private double[] doubleArray;
+//     private byte[]   byteData;
+//     private short[]  shortData;
+//     private int[]    intData;
+//     private float[]  floatData;
+//     private double[] doubleData;
+//     private BufferDataType type;
 
-//     public BufferData(byte[] byteArray)
+//     public BufferData(byte[] data)
 //     {
-//         this.setData(byteArray);
+//         this.setData(data);
 //     }
 
-//     public Object
+//     public BufferData(short[] data)
+//     {
+//         this.setData(data);
+//     }
+
+//     public BufferData(int[] data)
+//     {
+//         this.setData(data);
+//     }
+
+//     public BufferData(float[] data)
+//     {
+//         this.setData(data);
+//     }
+
+//     public BufferData(double[] data)
+//     {
+//         this.setData(data);
+//     }
+
+//     public void clearCurrentData()
+//     {
+//         switch (this.type)
+//         {
+//             case BufferDataType.BYTE   -> this.byteData   = null;
+//             case BufferDataType.SHORT  -> this.shortData  = null;
+//             case BufferDataType.INT    -> this.intData    = null;
+//             case BufferDataType.FLOAT  -> this.floatData  = null;
+//             case BufferDataType.DOUBLE -> this.doubleData = null;
+//         }
+//     }
+
+//     public  getData()
+//     {
+
+//     }
+
+//     public void setData(byte[] data)
+//     {
+//         this.clearCurrentData();
+
+//         this.byteData = data.clone();
+//         this.type = BufferDataType.BYTE;
+//     }
+
+//     public void setData(short[] data)
+//     {
+//         this.clearCurrentData();
+
+//         this.shortData = data.clone();
+//         this.type = BufferDataType.SHORT;
+//     }
+
+//     public void setData(int[] data)
+//     {
+//         this.clearCurrentData();
+
+//         this.intData = data.clone();
+//         this.type = BufferDataType.INT;
+//     }
+
+//     public void setData(float[] data)
+//     {
+//         this.clearCurrentData();
+
+//         this.floatData = data.clone();
+//         this.type = BufferDataType.FLOAT;
+//     }
+
+//     public void setData(double[] data)
+//     {
+//         this.clearCurrentData();
+
+//         this.doubleData = data.clone();
+//         this.type = BufferDataType.DOUBLE;
+//     }
 // }
 
 public sealed interface BufferData

@@ -1,15 +1,15 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
@@ -31,13 +31,14 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import org.lwjgl.opengl.GLUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import com.mk.engine.buffers.data.FloatBufferData;
-import com.mk.engine.buffers.data.UnsignedByteBufferData;
-import com.mk.engine.buffers.objects.VertexArrayObject;
+import com.mk.engine.buffers.bufferobjects.FloatVertexBufferObject;
+import com.mk.engine.buffers.bufferobjects.UnsignedByteElementBufferObject;
+import com.mk.engine.buffers.bufferobjects.UnsignedByteVertexBufferObject;
 import com.mk.engine.buffers.bufferobjects.VertexBufferObject;
+import com.mk.engine.buffers.vertexarrayobjects.VertexArrayObject;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
@@ -64,6 +65,7 @@ public class Main
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // macOS
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
         long window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "yes", NULL, NULL);
         if (window == NULL)
@@ -75,43 +77,48 @@ public class Main
         glfwSwapInterval(1);
 
         GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback();
         glEnable(GL_DEPTH_TEST);
 
         Node cube = new Node();
-        cube.addChild(new Mesh(new VertexArrayObject(arrayListOf(new VertexBufferObject(new FloatBufferData(new float[]{
-          // pos
-            -0.5f,-0.5f, 0.5f,  0.5f,-0.5f, 0.5f,  0.5f, 0.5f, 0.5f,
-             0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f,-0.5f, 0.5f,
-
-             0.5f,-0.5f,-0.5f, -0.5f,-0.5f,-0.5f, -0.5f, 0.5f,-0.5f,
-            -0.5f, 0.5f,-0.5f,  0.5f, 0.5f,-0.5f,  0.5f,-0.5f,-0.5f,
-
-            -0.5f,-0.5f,-0.5f, -0.5f,-0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f,
-
-             0.5f,-0.5f, 0.5f,  0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,
-             0.5f, 0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f,-0.5f, 0.5f,
-
-            -0.5f, 0.5f, 0.5f,  0.5f, 0.5f, 0.5f,  0.5f, 0.5f,-0.5f,
-             0.5f, 0.5f,-0.5f, -0.5f, 0.5f,-0.5f, -0.5f, 0.5f, 0.5f,
-
-            -0.5f,-0.5f,-0.5f,  0.5f,-0.5f,-0.5f,  0.5f,-0.5f, 0.5f,
-             0.5f,-0.5f, 0.5f, -0.5f,-0.5f ,0.5f, -0.5f,-0.5f,-0.5f
-        }), arrayListOf(3)), new VertexBufferObject(new UnsignedByteBufferData(new byte[]{
-         // u v
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0,
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0,
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0,
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0,
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0,
-            0,0, 1,0, 1,1,
-            1,1, 0,1, 0,0
-        }), arrayListOf(2))))));
+        cube.addChild(newRectangularPrismMesh(new Vector3f(), new Vector3f(1, 1, 1)));
+        // cube.addChild(new Mesh(new VertexArrayObject(
+        //     new VertexBufferObject[]{
+        //         new FloatVertexBufferObject(new float[]{
+        //         //    x      y      z      x      y      z      x      y      z
+        //             -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
+        //              0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
+        //              0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,
+        //             -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
+        //             -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
+        //             -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+        //              0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,
+        //              0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
+        //             -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
+        //              0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,
+        //             -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,
+        //              0.5f, -0.5f,  0.5f, -0.5f, -0.5f  ,0.5f, -0.5f, -0.5f, -0.5f
+        //         }, new int[]{3}),
+        //         new UnsignedByteVertexBufferObject(new short[]{
+        //         //  u  v  u  v  u  v
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0,
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0,
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0,
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0,
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0,
+        //             0, 0, 1, 0, 1, 1,
+        //             1, 1, 0, 1, 0, 0
+        //         }, new int[]{2}),
+        //     },
+        //     new UnsignedByteElementBufferObject(new byte[]{
+        //         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+        //     })
+        // )));
 
         Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
 
@@ -138,7 +145,7 @@ public class Main
             glClearColor(0.1f, 0.1f, 0.15f, 1f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2), 0));
+            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2) * 3 + 0.5f, 0));
 
             shaderProgram.use();
 
@@ -187,8 +194,56 @@ public class Main
         }
     }
 
-    private static <T> ArrayList<T> arrayListOf(T... elements)
+    private static Mesh newRectangularPrismMesh(Vector3fc position, Vector3fc size)
     {
-        return new ArrayList<T>(List.of(elements));
+        float positionX = position.x(), positionY = position.y(), positionZ = position.z();
+        float sizeX = size.x(), sizeY = size.y(), sizeZ = size.z();
+        float[] positions = {
+            positionX        , positionY        , positionZ        ,
+            positionX + sizeX, positionY        , positionZ        ,
+            positionX + sizeX, positionY + sizeY, positionZ        ,
+            positionX        , positionY + sizeY, positionZ        ,
+            positionX        , positionY        , positionZ + sizeZ,
+            positionX + sizeX, positionY        , positionZ + sizeZ,
+            positionX + sizeX, positionY + sizeY, positionZ + sizeZ,
+            positionX        , positionY + sizeY, positionZ + sizeZ
+        };
+        float[] repeatedPositions = new float[24];
+        for (int i = 0; i < 24; i += 8)
+        {
+            System.arraycopy(positions, 0, repeatedPositions, i, 8);
+        }
+
+        short[] uvs = {
+        //  u  v
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1,
+            1, 1, 0, 1, 0, 0
+        };
+        short[] indices = {
+             4,  5,  6,  6,  7,  4,
+             0, 12, 15, 15,  3,  0,
+             8,  1, 13, 13, 20,  8,
+            16,  2,  9, 16, 11,  2,
+            17, 14, 21, 17, 10, 14,
+            19, 22, 18, 19, 23, 22,
+        };
+
+        return new Mesh(new VertexArrayObject(
+            new VertexBufferObject[]{
+                new FloatVertexBufferObject(repeatedPositions, new int[]{3}),
+                new UnsignedByteVertexBufferObject(uvs, new int[]{2})
+            },
+            new UnsignedByteElementBufferObject(indices)
+        ));
     }
 }

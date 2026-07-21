@@ -1,6 +1,6 @@
 package com.mk.engine.nodes;
 
-import com.mk.engine.buffers.objects.VertexArrayObject;
+import com.mk.engine.buffers.vertexarrayobjects.VertexArrayObject;
 
 public class Mesh extends Node
 {
