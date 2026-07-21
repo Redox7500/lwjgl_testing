@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 
@@ -6,10 +6,8 @@ public abstract class VertexBufferObject extends BufferObject
 {
     private int[] strides = {1};
 
-    public VertexBufferObject()                             {}
-    public VertexBufferObject(int dataUsage)                {this.dataUsage = dataUsage;}
-    public VertexBufferObject(int[] strides)                {this.strides = strides;}
-    public VertexBufferObject(int dataUsage, int[] strides) {this(dataUsage); this.strides = strides;}
+    public VertexBufferObject()              {}
+    public VertexBufferObject(int[] strides) {this.strides = strides;}
 
     public void use()
     {

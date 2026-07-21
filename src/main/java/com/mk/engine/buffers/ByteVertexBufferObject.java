@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import java.nio.ByteBuffer;
 
@@ -12,14 +12,9 @@ public class ByteVertexBufferObject extends VertexBufferObject
     byte[] data;
 
     public ByteVertexBufferObject()                                           {super();}
-    public ByteVertexBufferObject(int dataUsage)                              {super(dataUsage);}
     public ByteVertexBufferObject(int[] strides)                              {super(strides);}
-    public ByteVertexBufferObject(int dataUsage, int[] strides)               {super(dataUsage, strides);}
-
     public ByteVertexBufferObject(byte[] data)                                {super(); this.setData(data);}
-    public ByteVertexBufferObject(byte[] data, int dataUsage)                 {super(dataUsage); this.setData(data);}
     public ByteVertexBufferObject(byte[] data, int[] strides)                 {super(strides); this.setData(data);}
-    public ByteVertexBufferObject(byte[] data, int dataUsage, int[] strides)  {super(dataUsage, strides); this.setData(data);}
 
     public byte[] getData()
     {

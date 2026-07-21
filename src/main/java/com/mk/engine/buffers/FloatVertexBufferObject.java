@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import java.nio.FloatBuffer;
 
@@ -12,14 +12,9 @@ public class FloatVertexBufferObject extends VertexBufferObject
     private float[] data;
 
     public FloatVertexBufferObject()                                           {super();}
-    public FloatVertexBufferObject(int dataUsage)                              {super(dataUsage);}
     public FloatVertexBufferObject(int[] strides)                              {super(strides);}
-    public FloatVertexBufferObject(int dataUsage, int[] strides)               {super(dataUsage, strides);}
-
     public FloatVertexBufferObject(float[] data)                               {super(); this.setData(data);}
-    public FloatVertexBufferObject(float[] data, int dataUsage)                {super(dataUsage); this.setData(data);}
     public FloatVertexBufferObject(float[] data, int[] strides)                {super(strides); this.setData(data);}
-    public FloatVertexBufferObject(float[] data, int dataUsage, int[] strides) {super(dataUsage, strides); this.setData(data);}
 
     public float[] getData()
     {

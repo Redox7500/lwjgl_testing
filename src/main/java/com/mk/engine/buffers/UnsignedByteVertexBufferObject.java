@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import java.nio.ByteBuffer;
 
@@ -12,19 +12,11 @@ public class UnsignedByteVertexBufferObject extends VertexBufferObject
     byte[] data;
 
     public UnsignedByteVertexBufferObject()                                           {super();}
-    public UnsignedByteVertexBufferObject(int dataUsage)                              {super(dataUsage);}
     public UnsignedByteVertexBufferObject(int[] strides)                              {super(strides);}
-    public UnsignedByteVertexBufferObject(int dataUsage, int[] strides)               {super(dataUsage, strides);}
-
     public UnsignedByteVertexBufferObject(byte[] data)                                {super(); this.setData(data);}
-    public UnsignedByteVertexBufferObject(byte[] data, int dataUsage)                 {super(dataUsage); this.setData(data);}
     public UnsignedByteVertexBufferObject(byte[] data, int[] strides)                 {super(strides); this.setData(data);}
-    public UnsignedByteVertexBufferObject(byte[] data, int dataUsage, int[] strides)  {super(dataUsage, strides); this.setData(data);}
-
     public UnsignedByteVertexBufferObject(short[] data)                               {super(); this.setData(data);}
-    public UnsignedByteVertexBufferObject(short[] data, int dataUsage)                {super(dataUsage); this.setData(data);}
     public UnsignedByteVertexBufferObject(short[] data, int[] strides)                {super(strides); this.setData(data);}
-    public UnsignedByteVertexBufferObject(short[] data, int dataUsage, int[] strides) {super(dataUsage, strides); this.setData(data);}
 
     public byte[] getData()
     {

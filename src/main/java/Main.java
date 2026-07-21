@@ -34,11 +34,11 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import org.lwjgl.opengl.GLUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import com.mk.engine.buffers.bufferobjects.FloatVertexBufferObject;
-import com.mk.engine.buffers.bufferobjects.UnsignedByteElementBufferObject;
-import com.mk.engine.buffers.bufferobjects.UnsignedByteVertexBufferObject;
-import com.mk.engine.buffers.bufferobjects.VertexBufferObject;
-import com.mk.engine.buffers.vertexarrayobjects.VertexArrayObject;
+import com.mk.engine.buffers.FloatVertexBufferObject;
+import com.mk.engine.buffers.UnsignedByteElementBufferObject;
+import com.mk.engine.buffers.UnsignedByteVertexBufferObject;
+import com.mk.engine.buffers.VertexArrayObject;
+import com.mk.engine.buffers.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;

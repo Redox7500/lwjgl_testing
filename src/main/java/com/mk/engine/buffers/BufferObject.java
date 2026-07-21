@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
@@ -10,8 +10,7 @@ public abstract class BufferObject
 
     private int id = glGenBuffers();
 
-    public BufferObject()              {}
-    public BufferObject(int dataUsage) {this.dataUsage = dataUsage;}
+    public BufferObject() {}
 
     public void use(int type) {glBindBuffer(type, this.id);}
 

@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.vertexarrayobjects;
+package com.mk.engine.buffers;
 
 import static org.lwjgl.opengl.GL11.GL_BYTE;
 import static org.lwjgl.opengl.GL11.GL_DOUBLE;
@@ -18,9 +18,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
 import static org.lwjgl.opengl.GL41.glVertexAttribLPointer;
-
-import com.mk.engine.buffers.bufferobjects.ElementBufferObject;
-import com.mk.engine.buffers.bufferobjects.VertexBufferObject;
 
 public class VertexArrayObject
 {

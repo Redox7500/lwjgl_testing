@@ -1,4 +1,4 @@
-package com.mk.engine.buffers.bufferobjects;
+package com.mk.engine.buffers;
 
 import java.nio.ByteBuffer;
 
@@ -12,13 +12,8 @@ public class UnsignedByteElementBufferObject extends ElementBufferObject
     byte[] data;
 
     public UnsignedByteElementBufferObject()                            {super();}
-    public UnsignedByteElementBufferObject(int dataUsage)               {super(dataUsage);}
-
     public UnsignedByteElementBufferObject(byte[] data)                 {super(); this.setData(data);}
-    public UnsignedByteElementBufferObject(byte[] data, int dataUsage)  {super(dataUsage); this.setData(data);}
-
     public UnsignedByteElementBufferObject(short[] data)                {super(); this.setData(data);}
-    public UnsignedByteElementBufferObject(short[] data, int dataUsage) {super(dataUsage); this.setData(data);}
 
     public byte[] getData()
     {
