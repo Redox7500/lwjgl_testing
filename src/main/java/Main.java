@@ -82,43 +82,6 @@ public class Main
 
         Node cube = new Node();
         cube.addChild(newRectangularPrismMesh(new Vector3f(), new Vector3f(1, 1, 1)));
-        // cube.addChild(new Mesh(new VertexArrayObject(
-        //     new VertexBufferObject[]{
-        //         new FloatVertexBufferObject(new float[]{
-        //         //    x      y      z      x      y      z      x      y      z
-        //             -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
-        //              0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
-        //              0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,
-        //             -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
-        //             -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
-        //             -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-        //              0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,
-        //              0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
-        //             -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
-        //              0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,
-        //             -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,
-        //              0.5f, -0.5f,  0.5f, -0.5f, -0.5f  ,0.5f, -0.5f, -0.5f, -0.5f
-        //         }, new int[]{3}),
-        //         new UnsignedByteVertexBufferObject(new short[]{
-        //         //  u  v  u  v  u  v
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0,
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0,
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0,
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0,
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0,
-        //             0, 0, 1, 0, 1, 1,
-        //             1, 1, 0, 1, 0, 0
-        //         }, new int[]{2}),
-        //     },
-        //     new UnsignedByteElementBufferObject(new byte[]{
-        //         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-        //     })
-        // )));
 
         Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
 
@@ -197,23 +160,6 @@ public class Main
     private static Mesh newRectangularPrismMesh(Vector3fc position, Vector3fc size)
     {
         float positionX = position.x(), positionY = position.y(), positionZ = position.z();
-        // float sizeX = size.x(), sizeY = size.y(), sizeZ = size.z();
-        // float[] positions = {
-        // //  x                  y                  z
-        //     positionX        , positionY        , positionZ        ,
-        //     positionX + sizeX, positionY        , positionZ        ,
-        //     positionX + sizeX, positionY + sizeY, positionZ        ,
-        //     positionX        , positionY + sizeY, positionZ        ,
-        //     positionX        , positionY        , positionZ + sizeZ,
-        //     positionX + sizeX, positionY        , positionZ + sizeZ,
-        //     positionX + sizeX, positionY + sizeY, positionZ + sizeZ,
-        //     positionX        , positionY + sizeY, positionZ + sizeZ
-        // };
-        // float[] repeatedPositions = new float[24];
-        // for (int i = 0; i < 24; i += 8)
-        // {
-        //     System.arraycopy(positions, 0, repeatedPositions, i, 8);
-        // }
         float halfSizeX = size.x() / 2, halfSizeY = size.y() / 2, halfSizeZ = size.z() / 2;
         float[] positions = {
             positionX - halfSizeX, positionY - halfSizeY, positionZ + halfSizeZ,
@@ -247,21 +193,6 @@ public class Main
             positionX - halfSizeX, positionY - halfSizeY, positionZ + halfSizeZ
         };
 
-        // short[] uvs = {
-        // //  u  v
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0,
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0,
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0,
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0,
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0,
-        //     0, 0, 1, 0, 1, 1,
-        //     1, 1, 0, 1, 0, 0
-        // };
         short[] uvs = {
             0, 0, 1, 0, 1, 1, 0, 1,
             0, 0, 1, 0, 1, 1, 0, 1,
@@ -270,14 +201,7 @@ public class Main
             0, 0, 1, 0, 1, 1, 0, 1,
             0, 0, 1, 0, 1, 1, 0, 1
         };
-        // short[] indices = {
-        //      4,  5,  6,  6,  7,  4,
-        //      0, 12, 15, 15,  3,  0,
-        //      8,  1, 13, 13, 20,  8,
-        //     16,  2,  9, 16, 11,  2,
-        //     17, 14, 21, 17, 10, 14,
-        //     19, 22, 18, 19, 23, 22,
-        // };
+
         short[] indices = {
              0,  1,  2,  2,  3,  0,
              4,  6,  5,  4,  7,  6,
