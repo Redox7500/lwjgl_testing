@@ -11,12 +11,12 @@ public class UnsignedByteVertexBufferObject extends VertexBufferObject
 {
     byte[] data;
 
-    public UnsignedByteVertexBufferObject()                                           {super();}
-    public UnsignedByteVertexBufferObject(int[] strides)                              {super(strides);}
-    public UnsignedByteVertexBufferObject(byte[] data)                                {super(); this.setData(data);}
-    public UnsignedByteVertexBufferObject(byte[] data, int[] strides)                 {super(strides); this.setData(data);}
-    public UnsignedByteVertexBufferObject(short[] data)                               {super(); this.setData(data);}
-    public UnsignedByteVertexBufferObject(short[] data, int[] strides)                {super(strides); this.setData(data);}
+    public UnsignedByteVertexBufferObject()                            {super();}
+    public UnsignedByteVertexBufferObject(int[] strides)               {super(strides);}
+    public UnsignedByteVertexBufferObject(byte[] data)                 {super(); this.setData(data);}
+    public UnsignedByteVertexBufferObject(byte[] data, int[] strides)  {super(strides); this.setData(data);}
+    public UnsignedByteVertexBufferObject(short[] data)                {super(); this.setData(data);}
+    public UnsignedByteVertexBufferObject(short[] data, int[] strides) {super(strides); this.setData(data);}
 
     public byte[] getData()
     {

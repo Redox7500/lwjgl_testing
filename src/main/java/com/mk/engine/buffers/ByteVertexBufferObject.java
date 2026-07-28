@@ -11,10 +11,10 @@ public class ByteVertexBufferObject extends VertexBufferObject
 {
     byte[] data;
 
-    public ByteVertexBufferObject()                                           {super();}
-    public ByteVertexBufferObject(int[] strides)                              {super(strides);}
-    public ByteVertexBufferObject(byte[] data)                                {super(); this.setData(data);}
-    public ByteVertexBufferObject(byte[] data, int[] strides)                 {super(strides); this.setData(data);}
+    public ByteVertexBufferObject()                           {super();}
+    public ByteVertexBufferObject(int[] strides)              {super(strides);}
+    public ByteVertexBufferObject(byte[] data)                {super(); this.setData(data);}
+    public ByteVertexBufferObject(byte[] data, int[] strides) {super(strides); this.setData(data);}
 
     public byte[] getData()
     {

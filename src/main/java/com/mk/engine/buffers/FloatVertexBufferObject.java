@@ -11,10 +11,10 @@ public class FloatVertexBufferObject extends VertexBufferObject
 {
     private float[] data;
 
-    public FloatVertexBufferObject()                                           {super();}
-    public FloatVertexBufferObject(int[] strides)                              {super(strides);}
-    public FloatVertexBufferObject(float[] data)                               {super(); this.setData(data);}
-    public FloatVertexBufferObject(float[] data, int[] strides)                {super(strides); this.setData(data);}
+    public FloatVertexBufferObject()                            {super();}
+    public FloatVertexBufferObject(int[] strides)               {super(strides);}
+    public FloatVertexBufferObject(float[] data)                {super(); this.setData(data);}
+    public FloatVertexBufferObject(float[] data, int[] strides) {super(strides); this.setData(data);}
 
     public float[] getData()
     {

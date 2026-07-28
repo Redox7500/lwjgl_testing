@@ -11,9 +11,9 @@ public class UnsignedByteElementBufferObject extends ElementBufferObject
 {
     byte[] data;
 
-    public UnsignedByteElementBufferObject()                            {super();}
-    public UnsignedByteElementBufferObject(byte[] data)                 {super(); this.setData(data);}
-    public UnsignedByteElementBufferObject(short[] data)                {super(); this.setData(data);}
+    public UnsignedByteElementBufferObject()             {super();}
+    public UnsignedByteElementBufferObject(byte[] data)  {super(); this.setData(data);}
+    public UnsignedByteElementBufferObject(short[] data) {super(); this.setData(data);}
 
     public byte[] getData()
     {
