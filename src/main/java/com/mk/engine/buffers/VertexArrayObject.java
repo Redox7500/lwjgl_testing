@@ -92,7 +92,7 @@ public class VertexArrayObject
         if (this.elementBufferObject != null)
         {
             this.elementBufferObject.use();
-            this.toBeDrawn = Math.min(this.elementBufferObject.getDataLength(), this.toBeDrawn);
+            this.toBeDrawn = this.elementBufferObject.getDataLength();
         }
 
         this.unuse();
