@@ -5,7 +5,7 @@ import org.joml.Vector4fc;
 
 public class Light extends Node
 {
-    public Vector4f color;
+    public Vector4f color = new Vector4f();
 
     public Light() {}
 
@@ -22,7 +22,7 @@ public class Light extends Node
     public Light(Transform transform, Vector4fc color)
     {
         super(transform);
-        
+
         this.color = new Vector4f(color);
     }
 }

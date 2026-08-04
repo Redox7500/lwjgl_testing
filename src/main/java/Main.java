@@ -40,6 +40,7 @@ import com.mk.engine.buffers.UnsignedByteVertexBufferObject;
 import com.mk.engine.buffers.VertexArrayObject;
 import com.mk.engine.buffers.VertexBufferObject;
 import com.mk.engine.nodes.Camera;
+import com.mk.engine.nodes.Light;
 import com.mk.engine.nodes.Mesh;
 import com.mk.engine.nodes.Node;
 import com.mk.engine.nodes.Transform;
@@ -88,7 +89,7 @@ public class Main
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
         camera.getLocalTransform().translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
 
-        // Light light = new Light(new Matrix4f().translate(new Vector3f(10, 10, 0)));
+        Light light = new Light(new Transform().translate(new Vector3f(10, 10, 0)), new Vector4f(1, 1, 1, 1));
         
         ShaderProgram shaderProgram = new ShaderProgram(
             loadText("/shaders/phong/main.vert"),
@@ -123,8 +124,8 @@ public class Main
                 Map.entry("uView",              Uniform.of(new Transform().copy(camera.getGlobalTransform()).inverse().getMatrix())),
                 Map.entry("uModel",             Uniform.of(cube.getGlobalTransform().getMatrix())),
                 Map.entry("uViewPosition",      Uniform.of(camera.getGlobalTransform().getTranslation())),
-                Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
-                Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
+                Map.entry("uLightPosition",     Uniform.of(light.getLocalTransform().getTranslation())),
+                Map.entry("uLightColor",        Uniform.of(light.color)),
                 Map.entry("uAmbientStrength",   Uniform.of(0.1f)),
                 Map.entry("uDiffuseStrength",   Uniform.of(1f)),
                 Map.entry("uSpecularStrength",  Uniform.of(0f)),

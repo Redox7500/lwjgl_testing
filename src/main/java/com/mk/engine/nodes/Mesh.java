@@ -30,7 +30,7 @@ public class Mesh extends Node
     @Override
     public void draw()
     {
-        if (!this.shouldDraw)
+        if (!this.shouldDraw || this.vertexArrayObject == null)
         {
             return;
         }
