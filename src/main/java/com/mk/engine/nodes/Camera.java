@@ -14,54 +14,35 @@ public class Camera extends Node
     private boolean dirtyProjectionMatrix = false;
     private boolean dirtyProjectionValues = false;
 
-    public Camera()
-    {
-        super();
-    }
-
-    public Camera(Matrix4f transform)
-    {
-        super(transform);
-    }
+    public Camera() {}
 
     public Camera(float fov, float aspect, float near, float far)
     {
-        super();
-
-        this.fov = fov;
-        this.aspect = aspect;
-        this.near = near;
-        this.far = far;
-
-        this.dirtyProjectionMatrix = true;
+        this.setFov(fov).setAspect(aspect).setNear(near).setFar(far);
     }
 
-    public Camera(Matrix4f transform, float fov, float aspect, float near, float far)
+    public Camera(Matrix4fc projectionMatrix)
+    {
+        this.setProjectionMatrix(projectionMatrix);
+    }
+
+    public Camera(Transform transform)
+    {
+        super(transform);
+    }
+
+    public Camera(Transform transform, float fov, float aspect, float near, float far)
     {
         super(transform);
 
-        this.fov = fov;
-        this.aspect = aspect;
-        this.near = near;
-        this.far = far;
-
-        this.dirtyProjectionMatrix = true;
+        this.setFov(fov).setAspect(aspect).setNear(near).setFar(far);
     }
 
-    public Camera(Matrix4f transform, Matrix4f projectionMatrix)
+    public Camera(Transform transform, Matrix4fc projectionMatrix)
     {
         super(transform);
 
-        this.projectionMatrix = projectionMatrix;
-
-        this.dirtyProjectionValues = true;
-    }
-
-    public void setProjectionMatrix(Matrix4f projectionMatrix)
-    {
-        this.projectionMatrix = projectionMatrix;
-
-        this.dirtyProjectionValues = true;
+        this.setProjectionMatrix(projectionMatrix);
     }
 
     public Matrix4fc getProjectionMatrix()
@@ -76,11 +57,13 @@ public class Camera extends Node
         return this.projectionMatrix;
     }
 
-    public void setFov(float fov)
+    public Camera setProjectionMatrix(Matrix4fc projectionMatrix)
     {
-        this.fov = fov;
+        this.projectionMatrix = new Matrix4f(projectionMatrix);
 
-        this.dirtyProjectionMatrix = true;
+        this.dirtyProjectionValues = true;
+
+        return this;
     }
 
     public float getFov()
@@ -98,11 +81,13 @@ public class Camera extends Node
         return this.fov;
     }
 
-    public void setAspect(float aspect)
+    public Camera setFov(float fov)
     {
-        this.aspect = aspect;
+        this.fov = fov;
 
         this.dirtyProjectionMatrix = true;
+
+        return this;
     }
 
     public float getAspect()
@@ -120,11 +105,13 @@ public class Camera extends Node
         return this.aspect;
     }
 
-    public void setNear(float near)
+    public Camera setAspect(float aspect)
     {
-        this.near = near;
+        this.aspect = aspect;
 
         this.dirtyProjectionMatrix = true;
+
+        return this;
     }
 
     public float getNear()
@@ -142,11 +129,13 @@ public class Camera extends Node
         return this.near;
     }
 
-    public void setFar(float far)
+    public Camera setNear(float near)
     {
-        this.far = far;
+        this.near = near;
 
         this.dirtyProjectionMatrix = true;
+
+        return this;
     }
 
     public float getFar()
@@ -162,5 +151,14 @@ public class Camera extends Node
         }
         
         return this.far;
+    }
+
+    public Camera setFar(float far)
+    {
+        this.far = far;
+
+        this.dirtyProjectionMatrix = true;
+
+        return this;
     }
 }

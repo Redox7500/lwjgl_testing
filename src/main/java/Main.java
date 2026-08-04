@@ -86,7 +86,7 @@ public class Main
         Texture cubeTexture = new Texture("/textures/cube copy.png"); // possibly add texture property for meshes?
 
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
-        camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
+        camera.getLocalTransform().translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
 
         // Light light = new Light(new Matrix4f().translate(new Vector3f(10, 10, 0)));
         
@@ -110,7 +110,7 @@ public class Main
             glClearColor(0.1f, 0.1f, 0.15f, 1f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2) * 3 + 0.5f, 0));
+            cube.getLocalTransform().rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2) * 3 + 0.5f, 0));
 
             shaderProgram.use();
 
@@ -120,9 +120,9 @@ public class Main
             // ));
             shaderProgram.setUniforms(Map.ofEntries(
                 Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
-                Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
-                Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
-                Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
+                Map.entry("uView",              Uniform.of(new Transform().copy(camera.getGlobalTransform()).inverse().getMatrix())),
+                Map.entry("uModel",             Uniform.of(cube.getGlobalTransform().getMatrix())),
+                Map.entry("uViewPosition",      Uniform.of(camera.getGlobalTransform().getTranslation())),
                 Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
                 Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
                 Map.entry("uAmbientStrength",   Uniform.of(0.1f)),

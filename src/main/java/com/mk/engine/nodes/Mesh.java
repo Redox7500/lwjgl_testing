@@ -7,12 +7,17 @@ public class Mesh extends Node
     // add transform usage
 
     public VertexArrayObject vertexArrayObject = null;
+    
+    public Mesh() {}
 
     public Mesh(VertexArrayObject vertexArrayObject)
     {
-        super();
-
         this.vertexArrayObject = vertexArrayObject;
+    }
+
+    public Mesh(Transform transform)
+    {
+        super(transform);
     }
 
     public Mesh(Transform transform, VertexArrayObject vertexArrayObject)
