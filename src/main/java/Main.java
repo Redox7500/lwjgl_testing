@@ -3,9 +3,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.joml.Vector4f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
@@ -83,14 +83,16 @@ public class Main
         Node cube = new Node();
         cube.addChild(newRectangularPrismMesh(new Vector3f(), new Vector3f(1, 1, 1)));
 
-        Texture cubeTexture = new Texture("/textures/cube.png"); // possibly add texture property for meshes?
+        Texture cubeTexture = new Texture("/textures/cube copy.png"); // possibly add texture property for meshes?
 
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
         camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
+
+        // Light light = new Light(new Matrix4f().translate(new Vector3f(10, 10, 0)));
         
         ShaderProgram shaderProgram = new ShaderProgram(
-            loadText("/shaders/basic/main.vert"),
-            loadText("/shaders/basic/main.frag")
+            loadText("/shaders/phong/main.vert"),
+            loadText("/shaders/phong/main.frag")
         );
 
         float startTime = (float)glfwGetTime();
@@ -112,23 +114,23 @@ public class Main
 
             shaderProgram.use();
 
-            shaderProgram.setUniforms(Map.of(
-                "uModelViewProjection", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.globalTransform.getMatrix())),
-                "uTexture", Uniform.of(cubeTexture.use())
-            ));
-            // shaderProgram.setUniforms(Map.ofEntries(
-            //     Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
-            //     Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
-            //     Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
-            //     // Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
-            //     // Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
-            //     // Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
-            //     // Map.entry("uAmbientStrength",   Uniform.of(0.2f)),
-            //     // Map.entry("uDiffuseStrength",   Uniform.of(0.2f)),
-            //     // Map.entry("uSpecularStrength",  Uniform.of(0.2f)),
-            //     // Map.entry("uSpecularShininess", Uniform.of(32)),
-            //     Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
+            // shaderProgram.setUniforms(Map.of(
+            //     "uModelViewProjection", Uniform.of(new Matrix4f(camera.getProjectionMatrix()).mul(new Transform(camera.globalTransform).inverse().getMatrix()).mul(cube.globalTransform.getMatrix())),
+            //     "uTexture", Uniform.of(cubeTexture.use())
             // ));
+            shaderProgram.setUniforms(Map.ofEntries(
+                Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
+                Map.entry("uView",              Uniform.of(new Transform(camera.globalTransform).inverse().getMatrix())),
+                Map.entry("uModel",             Uniform.of(cube.globalTransform.getMatrix())),
+                Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
+                Map.entry("uLightPosition",     Uniform.of(new Vector3f(10, 10, 0))),
+                Map.entry("uLightColor",        Uniform.of(new Vector4f(1, 1, 1, 1))),
+                Map.entry("uAmbientStrength",   Uniform.of(0.1f)),
+                Map.entry("uDiffuseStrength",   Uniform.of(1f)),
+                Map.entry("uSpecularStrength",  Uniform.of(0f)),
+                Map.entry("uSpecularShininess", Uniform.of(32)),
+                Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
+            ));
 
             cube.draw();
 
@@ -155,6 +157,119 @@ public class Main
         {
             throw new RuntimeException(e);
         }
+    }
+
+    // private static float[] generateNormals(float[] positions, int[] indices)
+    // {
+    //     float[] normals = new float[positions.length];
+
+    //     for (int i = 0; i < indices.length; i += 3)
+    //     {
+    //         int index0 = indices[i] * 3;
+    //         int index1 = indices[i + 1] * 3;
+    //         int index2 = indices[i + 2] * 3;
+    //         Vector3f position0 = new Vector3f(positions[index0], positions[index0 + 1], positions[index0 + 2]);
+    //         Vector3f position1 = new Vector3f(positions[index1], positions[index1 + 1], positions[index1 + 2]);
+    //         Vector3f position2 = new Vector3f(positions[index2], positions[index2 + 1], positions[index2 + 2]);
+
+    //         Vector3f edge1 = new Vector3f();
+    //         position1.sub(position0, edge1);
+    //         Vector3f edge2 = new Vector3f();
+    //         position2.sub(position0, edge2);
+
+    //         Vector3f normal = new Vector3f();
+    //         edge1.cross(edge2, normal);
+
+    //         if (normal.length() > 1e-4f)
+    //         {
+    //             normal.normalize();
+    //         }
+    //         else
+    //         {
+    //             normal = new Vector3f();
+    //         }
+
+    //         normals[index0] = normal.x; normals[index0 + 1] = normal.y; normals[index0 + 2] = normal.z;
+    //         normals[index1] = normal.x; normals[index1 + 1] = normal.y; normals[index1 + 2] = normal.z;
+    //         normals[index2] = normal.x; normals[index2 + 1] = normal.y; normals[index2 + 2] = normal.z;
+    //     }
+
+    //     return normals;
+    // }
+    // private static float[] generateNormals(float[] positions, byte[] indices) 
+    // {
+    //     float[] normals = new float[positions.length];
+
+    //     for (int i = 0; i < indices.length; i += 3)
+    //     {
+    //         int index0 = indices[i] * 3;
+    //         int index1 = indices[i + 1] * 3;
+    //         int index2 = indices[i + 2] * 3;
+    //         Vector3f position0 = new Vector3f(positions[index0], positions[index0 + 1], positions[index0 + 2]);
+    //         Vector3f position1 = new Vector3f(positions[index1], positions[index1 + 1], positions[index1 + 2]);
+    //         Vector3f position2 = new Vector3f(positions[index2], positions[index2 + 1], positions[index2 + 2]);
+
+    //         Vector3f edge1 = new Vector3f();
+    //         position1.sub(position0, edge1);
+    //         Vector3f edge2 = new Vector3f();
+    //         position2.sub(position0, edge2);
+
+    //         Vector3f normal = new Vector3f();
+    //         edge1.cross(edge2, normal);
+
+    //         if (normal.length() > 1e-4f)
+    //         {
+    //             normal.normalize();
+    //         }
+    //         else
+    //         {
+    //             normal = new Vector3f();
+    //         }
+
+    //         normals[index0] = normal.x; normals[index0 + 1] = normal.y; normals[index0 + 2] = normal.z;
+    //         normals[index1] = normal.x; normals[index1 + 1] = normal.y; normals[index1 + 2] = normal.z;
+    //         normals[index2] = normal.x; normals[index2 + 1] = normal.y; normals[index2 + 2] = normal.z;
+    //     }
+
+    //     return normals;
+    // }
+
+    private static float[] generateNormals(float[] positions, short[] indices)
+    {
+        float[] normals = new float[positions.length];
+
+        for (int i = 0; i < indices.length; i += 3)
+        {
+            int index0 = indices[i] * 3;
+            int index1 = indices[i + 1] * 3;
+            int index2 = indices[i + 2] * 3;
+            Vector3f position0 = new Vector3f(positions[index0], positions[index0 + 1], positions[index0 + 2]);
+            Vector3f position1 = new Vector3f(positions[index1], positions[index1 + 1], positions[index1 + 2]);
+            Vector3f position2 = new Vector3f(positions[index2], positions[index2 + 1], positions[index2 + 2]);
+
+            Vector3f edge1 = new Vector3f();
+            position1.sub(position0, edge1);
+            Vector3f edge2 = new Vector3f();
+            position2.sub(position0, edge2);
+
+            Vector3f normal = new Vector3f();
+            edge1.cross(edge2, normal);
+
+            if (normal.length() > 1e-4f)
+            {
+                normal.normalize();
+            }
+            else
+            {
+                normal = new Vector3f();
+            }
+
+            normals[index0] = normal.x; normals[index0 + 1] = normal.y; normals[index0 + 2] = normal.z;
+            normals[index1] = normal.x; normals[index1 + 1] = normal.y; normals[index1 + 2] = normal.z;
+            normals[index2] = normal.x; normals[index2 + 1] = normal.y; normals[index2 + 2] = normal.z;
+        }
+
+        return normals;
     }
 
     private static Mesh newRectangularPrismMesh(Vector3fc position, Vector3fc size)
@@ -211,10 +326,13 @@ public class Main
             20, 21, 22, 22, 23, 20
         };
 
+        float[] normals = Main.generateNormals(positions, indices);
+
         return new Mesh(new VertexArrayObject(
             new VertexBufferObject[]{
-                new FloatVertexBufferObject(positions, new int[]{3}),
-                new UnsignedByteVertexBufferObject(uvs, new int[]{2})
+                new FloatVertexBufferObject(       positions, new int[]{3}),
+                new FloatVertexBufferObject(       normals,   new int[]{3}),
+                new UnsignedByteVertexBufferObject(uvs,       new int[]{2})
             },
             new UnsignedByteElementBufferObject(indices)
         ));

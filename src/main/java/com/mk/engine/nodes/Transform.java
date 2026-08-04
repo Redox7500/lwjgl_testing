@@ -13,6 +13,11 @@ public class Transform
     private Node attachedNode = null;
     private TransformType type = null;
 
+    public Transform()
+    {
+        this.matrix = new Matrix4f();
+    }
+
     public Transform(Matrix4fc matrix)
     {
         this.matrix = new Matrix4f(matrix);
