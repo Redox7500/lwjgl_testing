@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Node
 {
-    protected Transform localTransform  = new Transform(this, TransformType.LOCAL);
-    protected Transform globalTransform = new Transform(this, TransformType.GLOBAL);
+    public final Transform localTransform  = new Transform(this, TransformType.LOCAL);
+    public final Transform globalTransform = new Transform(this, TransformType.GLOBAL);
 
     public boolean shouldDraw = true;
 
@@ -14,10 +14,7 @@ public class Node
     private List<Node> children = new ArrayList<>();
 
     public Node()                    {} // be aware that things "inheriting" this empty constructor don't do super, their constructors are literally just empty
-    public Node(Transform transform) {this.localTransform = new Transform(this, TransformType.LOCAL).copy(transform);}
-
-    public Transform getLocalTransform() {return this.localTransform;}
-    public Transform getGlobalTransform() {return this.globalTransform;}
+    public Node(Transform transform) {this.localTransform.copy(transform);}
 
     public Node setParent(Node parent)
     {

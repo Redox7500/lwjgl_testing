@@ -99,9 +99,10 @@ public class Transform
     public Transform scaleY(float factor) {this.matrix.scale(0, factor, 0); this.updateAttachedNode(); return this;}
     public Transform scaleZ(float factor) {this.matrix.scale(0, 0, factor); this.updateAttachedNode(); return this;}
 
-    public Transform inverse() {this.matrix.invert(); this.updateAttachedNode(); return this;}
+    public Transform invert() {this.matrix.invert(); this.updateAttachedNode(); return this;}
+    public Transform inverse() {return new Transform().copy(this).invert();}
 
-    public Transform apply(Transform transform) {transform.matrix.mul(this.matrix, this.matrix); this.updateAttachedNode(); return this;}
+    public Transform apply(Transform transform) {transform.getMatrix().mul(this.matrix, this.matrix); this.updateAttachedNode(); return this;}
 
     public Transform copy(Transform transform) {this.setMatrix(transform.getMatrix()); return this;}
 }
