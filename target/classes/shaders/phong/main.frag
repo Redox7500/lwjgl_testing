@@ -2,7 +2,7 @@
 
 in vec3 vFragmentPosition;
 in vec3 vNormal;
-in vec2 vUV;
+in vec2 vUv;
 
 uniform vec3 uViewPosition;
 uniform vec3 uLightPosition;
@@ -28,5 +28,5 @@ void main()
     float spec = pow(max(dot(viewDirection, reflectDirection), 0.f), uSpecularShininess);
     vec4 specular = uSpecularStrength * spec * uLightColor;
 
-    vFragmentColor = (ambient + diffuse + specular) * texture(uTexture, vUV);
+    vFragmentColor = (ambient + diffuse + specular) * texture(uTexture, vUv);
 }

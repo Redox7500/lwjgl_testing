@@ -81,19 +81,37 @@ public class Main
         GLUtil.setupDebugMessageCallback();
         glEnable(GL_DEPTH_TEST);
 
-        Node cube = new Node();
-        cube.addChild(newRectangularPrismMesh(new Vector3f(), new Vector3f(1, 1, 1)));
+        Node scene = new Node();
+
+        Node cube = new Node().addChild(newRectangularPrismMesh(new Vector3f(), new Vector3f(1, 1, 1)));
+        scene.addChild(cube);
+
+        Node cube2 = new Node().addChild(newRectangularPrismMesh(new Vector3f(1f, 0, 0), new Vector3f(1)));
+        scene.addChild(cube2);
 
         Texture cubeTexture = new Texture("/textures/cube copy.png"); // possibly add texture property for meshes?
 
         Camera camera = new Camera((float)Math.toRadians(60), (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100);
-        camera.localTransform.translate(new Vector3f(0, 2, 6)).rotateX(-0.3f);
+        camera.localTransform.translate(0, 2, 6).rotateX(-0.3f);
 
-        Light light = new Light(new Transform().translate(new Vector3f(10, 10, 0)), new Vector4f(1, 1, 1, 1));
+        Light light = new Light(new Transform().translate(3, 3, 0), new Vector4f(1, 1, 1, 1));
         
         ShaderProgram shaderProgram = new ShaderProgram(
             loadText("/shaders/phong/main.vert"),
             loadText("/shaders/phong/main.frag")
+        );
+        shaderProgram.saveUniformLocations(
+            "uProjection",       
+            "uView",             
+            "uModel",            
+            "uViewPosition",     
+            "uLightPosition",    
+            "uLightColor",       
+            "uAmbientStrength",  
+            "uDiffuseStrength",  
+            "uSpecularStrength", 
+            "uSpecularShininess",
+            "uTexture"
         );
 
         float startTime = (float)glfwGetTime();
@@ -111,7 +129,7 @@ public class Main
             glClearColor(0.1f, 0.1f, 0.15f, 1f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            cube.localTransform.rotateY(deltaTime).setTranslation(new Vector3f(0, (float)Math.sin(elapsedTime * 2) * 3 + 0.5f, 0));
+            cube.localTransform.rotateY(deltaTime).setTranslation(0, (float)Math.sin(elapsedTime * 2) * 3 + 0.5f, 0);
 
             shaderProgram.use();
 
@@ -126,14 +144,28 @@ public class Main
                 Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
                 Map.entry("uLightPosition",     Uniform.of(light.globalTransform.getTranslation())),
                 Map.entry("uLightColor",        Uniform.of(light.color)),
-                Map.entry("uAmbientStrength",   Uniform.of(0.1f)),
+                Map.entry("uAmbientStrength",   Uniform.of(0f)),
                 Map.entry("uDiffuseStrength",   Uniform.of(1f)),
-                Map.entry("uSpecularStrength",  Uniform.of(0f)),
+                Map.entry("uSpecularStrength",  Uniform.of(10f)),
                 Map.entry("uSpecularShininess", Uniform.of(32)),
                 Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
             ));
-
             cube.draw();
+
+            shaderProgram.setUniforms(Map.ofEntries(
+                Map.entry("uProjection",        Uniform.of(camera.getProjectionMatrix())),
+                Map.entry("uView",              Uniform.of(camera.globalTransform.inverse().getMatrix())),
+                Map.entry("uModel",             Uniform.of(cube2.globalTransform.getMatrix())),
+                Map.entry("uViewPosition",      Uniform.of(camera.globalTransform.getTranslation())),
+                Map.entry("uLightPosition",     Uniform.of(light.globalTransform.getTranslation())),
+                Map.entry("uLightColor",        Uniform.of(light.color)),
+                Map.entry("uAmbientStrength",   Uniform.of(0f)),
+                Map.entry("uDiffuseStrength",   Uniform.of(1f)),
+                Map.entry("uSpecularStrength",  Uniform.of(10f)),
+                Map.entry("uSpecularShininess", Uniform.of(32)),
+                Map.entry("uTexture",           Uniform.of(cubeTexture.use()))
+            ));
+            cube2.draw();
 
             glfwSwapBuffers(window);
             glfwPollEvents();

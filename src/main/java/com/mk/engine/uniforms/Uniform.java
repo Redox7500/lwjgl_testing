@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 public sealed interface Uniform
     permits I, F, V3F, V4F, M4F
 {
-    public static Uniform of(int value) {return new I(value);}
+    public static Uniform of(int value)   {return new I(value);}
     public static Uniform of(float value) {return new F(value);}
     public static Uniform of(Vector3fc value) {return new V3F(value);}
     public static Uniform of(Vector4fc value) {return new V4F(value);}

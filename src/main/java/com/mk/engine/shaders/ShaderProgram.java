@@ -1,11 +1,8 @@
 package com.mk.engine.shaders;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
@@ -33,7 +30,7 @@ import com.mk.engine.uniforms.Uniform;
 
 public class ShaderProgram
 {
-    private int id = glCreateProgram();
+    public final int id = glCreateProgram();
 
     private int vertexShaderId = 0;
     private int fragmentShaderId = 0;
@@ -50,10 +47,7 @@ public class ShaderProgram
 
     private Map<String, Integer> uniformLocationMap = new HashMap<>();
 
-    public ShaderProgram()
-    {
-
-    }
+    public ShaderProgram() {}
 
     public ShaderProgram(String vertexShaderSource, String fragmentShaderSource)
     {
@@ -61,17 +55,11 @@ public class ShaderProgram
         this.setFragmentShaderSource(fragmentShaderSource);
     }
 
-    public int getId()
-    {
-        return this.id;
-    }
-
     private void setShaderSource(int shaderId, String source)
     {
         glShaderSource(shaderId, source);
         this.compileShader(shaderId);
         this.link();
-        this.updateUniformLocationMap();
     }
 
     private void compileShader(int shaderId)
@@ -100,7 +88,7 @@ public class ShaderProgram
         }
     }
 
-    public void setVertexShaderSource(String source)
+    public ShaderProgram setVertexShaderSource(String source)
     {
         this.vertexShaderSource = source;
 
@@ -111,9 +99,11 @@ public class ShaderProgram
         }
 
         this.setShaderSource(this.vertexShaderId, this.vertexShaderSource);
+
+        return this;
     }
 
-    public void setFragmentShaderSource(String source)
+    public ShaderProgram setFragmentShaderSource(String source)
     {
         this.fragmentShaderSource = source;
 
@@ -124,9 +114,11 @@ public class ShaderProgram
         }
 
         this.setShaderSource(this.fragmentShaderId, this.fragmentShaderSource);
+
+        return this;
     }
 
-    public void setGeometryShaderSource(String source)
+    public ShaderProgram setGeometryShaderSource(String source)
     {
         this.geometryShaderSource = source;
 
@@ -137,9 +129,11 @@ public class ShaderProgram
         }
 
         this.setShaderSource(this.geometryShaderId, this.geometryShaderSource);
+
+        return this;
     }
 
-    public void setTessellationEvaluationShaderSource(String source)
+    public ShaderProgram setTessellationEvaluationShaderSource(String source)
     {
         this.tessellationEvaluationShaderSource = source;
 
@@ -150,9 +144,11 @@ public class ShaderProgram
         }
 
         this.setShaderSource(this.tessellationEvaluationShaderId, this.tessellationEvaluationShaderSource);
+
+        return this;
     }
 
-    public void setTessellationShadersSources(String controlSource, String evaluationSource)
+    public ShaderProgram setTessellationShadersSources(String controlSource, String evaluationSource)
     {
         this.tessellationControlShaderSource = controlSource;
 
@@ -165,9 +161,11 @@ public class ShaderProgram
         this.setShaderSource(this.tessellationControlShaderId, this.tessellationControlShaderSource);
 
         this.setTessellationEvaluationShaderSource(evaluationSource);
+
+        return this;
     }
 
-    // public void setComputeShaderSource(String source)
+    // public ShaderProgram setComputeShaderSource(String source)
     // {
     //     this.computeShaderSource = source;
 
@@ -178,74 +176,118 @@ public class ShaderProgram
     //     }
 
     //     this.setShaderSource(this.computeShaderId, this.computeShaderSource);
+    
+    //     return this;
     // }
 
-    public void removeGeometryShader()
+    public ShaderProgram removeGeometryShader()
     {
         this.removeShader(this.geometryShaderId);
 
         this.geometryShaderSource = null;
+
+        return this;
     }
 
-    public void removeTessellationControlShader()
+    public ShaderProgram removeTessellationControlShader()
     {
         this.removeShader(this.tessellationControlShaderId);
         
         this.tessellationControlShaderSource = null;
+
+        return this;
     }
 
-    public void removeTessellationShaders()
+    public ShaderProgram removeTessellationShaders()
     {
         this.removeShader(this.tessellationEvaluationShaderId);
 
         this.tessellationEvaluationShaderSource = null;
 
         this.removeTessellationControlShader();
+
+        return this;
     }
 
-    // public void removeComputeShader()
+    // public ShaderProgram removeComputeShader()
     // {
     //     this.removeShader(this.computeShaderId);
 
     //     this.computeShaderSource = null;
+
+    //     return this;
     // }
 
-    public void updateUniformLocationMap()
+    public ShaderProgram saveUniformLocation(String uniformName)
     {
-        this.uniformLocationMap = new HashMap<>();
+        this.uniformLocationMap.put(uniformName, glGetUniformLocation(this.id, uniformName));
 
-        StringBuilder combinedSources = new StringBuilder(this.vertexShaderSource + this.fragmentShaderSource);
-        if (this.geometryShaderId != 0)
-        {
-            combinedSources.append(this.geometryShaderSource);
-        }
-        if (this.tessellationControlShaderId != 0)
-        {
-            combinedSources.append(this.tessellationControlShaderSource);
-        }
-        if (this.tessellationEvaluationShaderId != 0)
-        {
-            combinedSources.append(this.tessellationEvaluationShaderSource);
-        }
-        // if (this.computeShaderId != 0)
-        // {
-        //     combinedSources.append(this.computeShaderSource);
-        // }
+        return this;
+    }
 
-        Pattern pattern = Pattern.compile("(uniform\\s+[a-zA-Z0-9_]+\\s+([a-zA-Z0-9_\\[\\]]+(?:\\s*,\\s*[a-zA-Z0-9_\\[\\]]+)*))");
-        Matcher matcher = pattern.matcher(combinedSources); // should i change when combined sources is updated, so that it updates when a shader is attached? or maybe some dirty flag? idk
-        List<String> uniformNames = new ArrayList<>();
-        while (matcher.find())
-        {
-            uniformNames.add(matcher.group(matcher.groupCount()));
-        }
-
-        this.use();
+    public ShaderProgram saveUniformLocations(String... uniformNames)
+    {
         for (String uniformName:uniformNames)
         {
             this.uniformLocationMap.put(uniformName, glGetUniformLocation(this.id, uniformName));
         }
+
+        return this;
     }
+
+    public ShaderProgram removeSavedUniformLocations(String... uniformNames)
+    {
+        for (String uniformName:uniformNames)
+        {
+            this.uniformLocationMap.remove(uniformName);
+        }
+
+        return this;
+    }
+
+    public ShaderProgram removeAllSavedUniformLocations()
+    {
+        this.uniformLocationMap.clear();
+
+        return this;
+    }
+
+    // public void updateUniformLocationMap()
+    // {
+    //     this.uniformLocationMap = new HashMap<>();
+
+    //     StringBuilder combinedSources = new StringBuilder(this.vertexShaderSource + this.fragmentShaderSource);
+    //     if (this.geometryShaderId != 0)
+    //     {
+    //         combinedSources.append(this.geometryShaderSource);
+    //     }
+    //     if (this.tessellationControlShaderId != 0)
+    //     {
+    //         combinedSources.append(this.tessellationControlShaderSource);
+    //     }
+    //     if (this.tessellationEvaluationShaderId != 0)
+    //     {
+    //         combinedSources.append(this.tessellationEvaluationShaderSource);
+    //     }
+    //     // if (this.computeShaderId != 0)
+    //     // {
+    //     //     combinedSources.append(this.computeShaderSource);
+    //     // }
+
+    //     Pattern pattern = Pattern.compile("(uniform\\s+[a-zA-Z0-9_]+\\s+([a-zA-Z0-9_\\[\\]]+(?:\\s*,\\s*[a-zA-Z0-9_\\[\\]]+)*))");
+    //     Matcher matcher = pattern.matcher(combinedSources); // should i change when combined sources is updated, so that it updates when a shader is attached? or maybe some dirty flag? idk
+    //     List<String> uniformNames = new ArrayList<>();
+    //     while (matcher.find())
+    //     {
+    //         uniformNames.add(matcher.group(matcher.groupCount()));
+    //     }
+
+    //     this.use();
+    //     for (String uniformName:uniformNames)
+    //     {
+    //         this.uniformLocationMap.put(uniformName, glGetUniformLocation(this.id, uniformName));
+    //     }
+    // }
 
     public void use()
     {
@@ -254,9 +296,18 @@ public class ShaderProgram
 
     public void setUniforms(Map<String, Uniform> uniformValueMap)
     {
-        for (String name:uniformValueMap.keySet())
+        for (String uniformName:uniformValueMap.keySet())
         {
-            Uniform.set(this.uniformLocationMap.get(name), uniformValueMap.get(name));
+            Integer savedLocation = this.uniformLocationMap.get(uniformName);
+            if (savedLocation != null)
+            {
+                Uniform.set(savedLocation, uniformValueMap.get(uniformName));
+            }
+            else
+            {
+                Uniform.set(glGetUniformLocation(this.id, uniformName), uniformValueMap.get(uniformName));
+                java.util.logging.Logger.getLogger(ShaderProgram.class.getName()).warning(String.format("Uniform with name %s has an unsaved location!", uniformName));
+            }
         }
     }
 }

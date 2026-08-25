@@ -60,11 +60,13 @@ public class Transform
     public float getTranslationZ() {return this.matrix.m32();}
 
     public Transform setTranslation(Vector3fc translation) {this.matrix.setTranslation(translation); this.updateAttachedNode(); return this;}
+    public Transform setTranslation(float x, float y, float z) {return this.setTranslation(new Vector3f(x, y, z));}
     public Transform setTranslationX(float offset) {this.matrix.m30(offset); this.updateAttachedNode(); return this;}
     public Transform setTranslationY(float offset) {this.matrix.m31(offset); this.updateAttachedNode(); return this;}
     public Transform setTranslationZ(float offset) {this.matrix.m32(offset);this.updateAttachedNode(); return this;}
 
     public Transform translate(Vector3fc translation) {this.matrix.translate(translation); this.updateAttachedNode(); return this;}
+    public Transform translate(float x, float y, float z) {return this.translate(new Vector3f(x, y, z));}
     public Transform translateX(float offset) {this.matrix.translate(offset, 0, 0); this.updateAttachedNode(); return this;}
     public Transform translateY(float offset) {this.matrix.translate(0, offset, 0); this.updateAttachedNode(); return this;}
     public Transform translateZ(float offset) {this.matrix.translate(0, 0, offset); this.updateAttachedNode(); return this;}
@@ -75,11 +77,13 @@ public class Transform
     public float getRotationZ() {return this.getRotation().z;}
 
     public Transform setRotation(Vector3fc rotation) {this.matrix.setRotationXYZ(rotation.x(), rotation.y(), rotation.z()); this.updateAttachedNode(); return this;}
+    public Transform setRotation(float x, float y, float z) {return this.setRotation(new Vector3f(x, y, z));}
     public Transform setRotationX(float angle) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(0, angle)).scale(this.getScale()); this.updateAttachedNode(); return this;}
     public Transform setRotationY(float angle) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(1, angle)).scale(this.getScale()); this.updateAttachedNode(); return this;}
     public Transform setRotationZ(float angle) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation().setComponent(2, angle)).scale(this.getScale()); this.updateAttachedNode(); return this;}
 
     public Transform rotate(Vector3fc rotation) {this.matrix.rotateXYZ(rotation); this.updateAttachedNode(); return this;}
+    public Transform rotate(float x, float y, float z) {return this.rotate(new Vector3f(x, y, z));}
     public Transform rotateX(float angle) {this.matrix.rotateXYZ(angle, 0, 0); this.updateAttachedNode(); return this;}
     public Transform rotateY(float angle) {this.matrix.rotateXYZ(0, angle, 0); this.updateAttachedNode(); return this;}
     public Transform rotateZ(float angle) {this.matrix.rotateXYZ(0, 0, angle); this.updateAttachedNode(); return this;}
@@ -90,11 +94,13 @@ public class Transform
     public float getScaleZ() {return this.getScale().z;}
 
     public Transform setScale(Vector3fc scale) {this.matrix = new Matrix4f().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(scale); this.updateAttachedNode(); return this;}
+    public Transform setScale(float x, float y, float z) {return this.setScale(new Vector3f(x, y, z));}
     public Transform setScaleX(float factor) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(0, factor)); this.updateAttachedNode(); return this;}
     public Transform setScaleY(float factor) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(1, factor)); this.updateAttachedNode(); return this;}
     public Transform setScaleZ(float factor) {this.matrix.identity().translate(this.getTranslation()).rotateXYZ(this.getRotation()).scale(this.getScale().setComponent(2, factor)); this.updateAttachedNode(); return this;}
 
     public Transform scale(Vector3fc scale) {this.matrix.scale(scale); this.updateAttachedNode(); return this;}
+    public Transform scale(float x, float y, float z) {return this.scale(new Vector3f(x, y, z));}
     public Transform scaleX(float factor) {this.matrix.scale(factor, 0, 0); this.updateAttachedNode(); return this;}
     public Transform scaleY(float factor) {this.matrix.scale(0, factor, 0); this.updateAttachedNode(); return this;}
     public Transform scaleZ(float factor) {this.matrix.scale(0, 0, factor); this.updateAttachedNode(); return this;}
